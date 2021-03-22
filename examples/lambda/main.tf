@@ -21,4 +21,5 @@ module "lambda" {
   log_config     = var.log_config
   tracing_config = var.tracing_config
   vpc_config     = var.vpc_config
+  policies       = var.policies
 }

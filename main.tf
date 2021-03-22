@@ -35,11 +35,11 @@ resource "aws_lambda_function" "lambda" {
 
   dynamic "vpc_config" {
     for_each = var.vpc_config != null ? {
-      for key, val in [var.vpc_config] : key => val
+      for key, val in [var.vpc_config] : key => val if length(var.vpc_config) > 0
     } : {}
     content {
-      subnet_ids         = lookup(vpc_config.value, "subnets", null)
-      security_group_ids = lookup(vpc_config.value, "security_groups", null)
+      subnet_ids         = lookup(vpc_config.value, "subnets")
+      security_group_ids = lookup(vpc_config.value, "security_groups")
     }
   }
 }
@@ -80,10 +80,18 @@ resource "aws_iam_role_policy_attachment" "tracing" {
   policy_arn = "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "extra" {
+  for_each   = var.enabled ? { for key, val in var.policies : key => val } : {}
+  role       = aws_iam_role.lambda.0.name
+  policy_arn = each.value
+}
+
+### log group
 resource "aws_cloudwatch_log_group" "lambda" {
   for_each = var.enabled && var.log_config != null ? {
     for key, val in [var.log_config] : key => val
   } : {}
   name              = local.default_log_config["name"]
+  tags              = merge(local.default-tags, var.tags)
   retention_in_days = lookup(var.log_config, "retension_days", local.default_log_config["retention_days"])
 }

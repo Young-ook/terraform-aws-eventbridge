@@ -80,6 +80,12 @@ resource "aws_iam_role_policy_attachment" "tracing" {
   policy_arn = "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "extra" {
+  for_each   = var.enabled ? { for key, val in var.policies : key => val } : {}
+  role       = aws_iam_role.lambda.0.name
+  policy_arn = each.value
+}
+
 ### log group
 resource "aws_cloudwatch_log_group" "lambda" {
   for_each = var.enabled && var.log_config != null ? {

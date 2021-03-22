@@ -39,6 +39,13 @@ variable "tracing_config" {
   default     = {}
 }
 
+### security
+variable "policies" {
+  description = "A list of policy ARNs to attach the role for lambda function"
+  type        = list(string)
+  default     = []
+}
+
 ### description
 variable "name" {
   description = "The logical name of the module instance"

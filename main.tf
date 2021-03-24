@@ -18,9 +18,11 @@ resource "aws_lambda_function" "lambda" {
   }
 
   dynamic "environment" {
-    for_each = local.default_lambda_config["environment_variables"]
+    for_each = lookup(var.lambda_config, "environment_variables", null) != null ? {
+      for key, val in [lookup(var.lambda_config, "environment_variables")] : key => val
+    } : {}
     content {
-      variables = environment
+      variables = lookup(var.lambda_config, "environment_variables")
     }
   }
 

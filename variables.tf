@@ -7,7 +7,6 @@ variable "enabled" {
 ### computing/function
 variable "lambda_config" {
   description = "Lambda function configuration"
-  type        = map
   default     = {}
 }
 

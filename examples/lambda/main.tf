@@ -11,10 +11,7 @@ provider "aws" {
 
 # lambda
 module "lambda" {
-
-  #  source              = "Young-ook/lambda/aws"
-
-  source         = "../../"
+  source         = "Young-ook/lambda/aws"
   name           = var.name
   tags           = var.tags
   lambda_config  = var.lambda_config

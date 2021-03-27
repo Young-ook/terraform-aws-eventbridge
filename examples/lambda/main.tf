@@ -20,3 +20,14 @@ module "lambda" {
   vpc_config     = var.vpc_config
   policies       = var.policies
 }
+
+### lambda invokation for test
+data "aws_lambda_invocation" "invoke" {
+  depends_on    = [module.lambda]
+  function_name = var.name
+  input = jsonencode({
+    key1 = "value1"
+    key2 = "value2"
+    key3 = "value3"
+  })
+}

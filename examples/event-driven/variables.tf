@@ -1,26 +1,21 @@
-variable "enabled" {
-  description = "A conditional indicator to enable"
-  type        = bool
-  default     = true
-}
-
-### computing/function
-variable "lambda_config" {
-  description = "Lambda function configuration"
-  default     = {}
-}
-
-### computing/layer
-variable "layer_config" {
-  description = "Lambda layer configuration"
-  type        = map(any)
-  default     = {}
-}
+# Variables for providing to module fixture codes
 
 ### network
+variable "aws_region" {
+  description = "The aws region to deploy"
+  type        = string
+  default     = "us-east-1"
+}
+
 variable "vpc_config" {
   description = "VPC configuration for function"
   type        = map(any)
+  default     = {}
+}
+
+### function
+variable "lambda_config" {
+  description = "Lambda function configuration"
   default     = {}
 }
 

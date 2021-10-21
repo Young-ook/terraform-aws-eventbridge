@@ -1,12 +1,11 @@
-# ARM64 node groups example
+# AWS Lambda function example
 
 terraform {
-  required_version = "0.13.5"
+  required_version = "~> 1.0"
 }
 
 provider "aws" {
-  region              = var.aws_region
-  allowed_account_ids = [var.aws_account_id]
+  region = var.aws_region
 }
 
 # lambda
@@ -21,7 +20,7 @@ module "lambda" {
   policies       = var.policies
 }
 
-### lambda invokation for test
+# lambda invokation for test
 data "aws_lambda_invocation" "invoke" {
   depends_on    = [module.lambda]
   function_name = var.name

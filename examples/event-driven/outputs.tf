@@ -10,5 +10,5 @@ output "lambda" {
 
 output "log" {
   description = "Attributes of cloudwatch log group for the lmabda function"
-  value       = module.lambda.log
+  value       = module.logs
 }

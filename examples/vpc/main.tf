@@ -73,11 +73,17 @@ module "lambda" {
   name           = var.name
   tags           = var.tags
   lambda_config  = var.lambda_config
-  log_config     = var.log_config
   tracing_config = var.tracing_config
-  policies       = var.policies
   vpc_config = {
     subnets         = values(module.vpc.subnets["private"])
     security_groups = [aws_security_group.lambda.id]
   }
+  policy_arns = [module.logs.policy_arns["write"]]
+}
+
+# cloudwatch logs
+module "logs" {
+  source     = "Young-ook/lambda/aws//modules/logs"
+  name       = var.name
+  log_config = var.log_config
 }

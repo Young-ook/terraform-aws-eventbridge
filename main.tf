@@ -83,17 +83,7 @@ resource "aws_iam_role_policy_attachment" "tracing" {
 }
 
 resource "aws_iam_role_policy_attachment" "extra" {
-  for_each   = var.enabled ? { for key, val in var.policies : key => val } : {}
+  for_each   = var.enabled ? { for key, val in var.policy_arns : key => val } : {}
   role       = aws_iam_role.lambda.0.name
   policy_arn = each.value
-}
-
-### log group
-resource "aws_cloudwatch_log_group" "lambda" {
-  for_each = var.enabled && var.log_config != null ? {
-    for key, val in [var.log_config] : key => val
-  } : {}
-  name              = local.default_log_config["name"]
-  tags              = merge(local.default-tags, var.tags)
-  retention_in_days = lookup(var.log_config, "retension_days", local.default_log_config["retention_days"])
 }

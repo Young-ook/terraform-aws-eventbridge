@@ -3,6 +3,7 @@
 
 ## Examples
 - [Event-Driven Computing with AWS Lambda](https://github.com/Young-ook/terraform-aws-lambda/blob/main/examples/event-driven)
+- [AWS Lambda with Amazon VPC](https://github.com/Young-ook/terraform-aws-lambda/blob/main/examples/vpc)
 
 ## Getting started
 ### AWS CLI

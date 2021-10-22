@@ -23,10 +23,9 @@ module "lambda" {
   name           = var.name
   tags           = var.tags
   lambda_config  = var.lambda_config
-  log_config     = var.log_config
   tracing_config = var.tracing_config
   vpc_config     = var.vpc_config
-  policies       = var.policies
+  policy_arns    = [module.logs.policy_arns["write"]]
 }
 
 # lambda invokation for test
@@ -38,4 +37,11 @@ data "aws_lambda_invocation" "invoke" {
     key2 = "value2"
     key3 = "value3"
   })
+}
+
+# cloudwatch logs
+module "logs" {
+  source     = "Young-ook/lambda/aws//modules/logs"
+  name       = var.name
+  log_config = var.log_config
 }

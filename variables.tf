@@ -24,13 +24,6 @@ variable "vpc_config" {
   default     = {}
 }
 
-### log
-variable "log_config" {
-  description = "Log configuration for function"
-  type        = map(any)
-  default     = {}
-}
-
 ### tracing
 variable "tracing_config" {
   description = "AWS X-ray tracing configuration for function"
@@ -39,7 +32,7 @@ variable "tracing_config" {
 }
 
 ### security
-variable "policies" {
+variable "policy_arns" {
   description = "A list of policy ARNs to attach the role for lambda function"
   type        = list(string)
   default     = []

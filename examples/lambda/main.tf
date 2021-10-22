@@ -8,8 +8,17 @@ provider "aws" {
   region = var.aws_region
 }
 
+# zip arhive
+data "archive_file" "lambda_zip_file" {
+  output_path = "${path.module}/lambda_handler.zip"
+  source_dir  = "${path.module}/src/"
+  excludes    = ["__init__.py", "*.pyc"]
+  type        = "zip"
+}
+
 # lambda
 module "lambda" {
+  depends_on     = [data.archive_file.lambda_zip_file]
   source         = "Young-ook/lambda/aws"
   name           = var.name
   tags           = var.tags

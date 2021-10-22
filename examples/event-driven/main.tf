@@ -43,3 +43,35 @@ module "logs" {
   name       = var.name
   log_config = var.log_config
 }
+
+# pipeline
+module "ci" {
+  source = "Young-ook/spinnaker/aws//modules/codebuild"
+  name   = var.name
+  tags   = var.tags
+  environment_config = {
+    image           = "aws/codebuild/standard:4.0"
+    privileged_mode = true
+    environment_variables = {
+      WORKDIR         = "examples/event-driven"
+      PKG             = lookup(var.lambda_config, "package", "lambda_handler.zip")
+      ARTIFACT_BUCKET = module.artifact.bucket.id
+    }
+  }
+  source_config = {
+    type      = "GITHUB"
+    location  = "https://github.com/Young-ook/terraform-aws-lambda.git"
+    buildspec = "examples/event-driven/buildspec.yml"
+    version   = "main"
+  }
+  policy_arns = [
+    module.artifact.policy_arns["write"],
+  ]
+}
+
+module "artifact" {
+  source        = "Young-ook/spinnaker/aws//modules/s3"
+  name          = var.name
+  tags          = var.tags
+  force_destroy = true
+}

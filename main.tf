@@ -2,13 +2,15 @@
 resource "aws_lambda_function" "lambda" {
   count                          = var.enabled ? 1 : 0
   function_name                  = local.name
-  filename                       = lookup(var.lambda_config, "package", local.default_lambda_config["package"])
+  filename                       = lookup(var.lambda_config, "package", null)
+  s3_bucket                      = lookup(var.lambda_config, "s3_bucket", null)
+  s3_key                         = lookup(var.lambda_config, "s3_key", null)
+  s3_object_version              = lookup(var.lambda_config, "s3_object_version", null)
   handler                        = lookup(var.lambda_config, "handler", local.default_lambda_config["handler"])
   runtime                        = lookup(var.lambda_config, "runtime", local.default_lambda_config["runtime"])
   memory_size                    = lookup(var.lambda_config, "memory", local.default_lambda_config["memory"])
   timeout                        = lookup(var.lambda_config, "timeout", local.default_lambda_config["timeout"])
   reserved_concurrent_executions = lookup(var.lambda_config, "provisioned_concurrency", local.default_lambda_config["provisioned_concurrency"])
-  source_code_hash               = filebase64sha256(lookup(var.lambda_config, "package", local.default_lambda_config["package"]))
   publish                        = lookup(var.lambda_config, "publish", local.default_lambda_config["publish"])
   role                           = aws_iam_role.lambda.0.arn
   tags                           = merge(local.default-tags, var.tags)

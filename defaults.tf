@@ -2,7 +2,7 @@ data "aws_region" "current" {}
 
 locals {
   default_lambda_config = {
-    package                 = "Please upload lambda function package"
+    package                 = "lambda_handler.zip"
     handler                 = "lambda_handler"
     runtime                 = "python3.8"
     memory                  = 128

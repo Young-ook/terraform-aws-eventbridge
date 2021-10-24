@@ -28,10 +28,14 @@ resource "aws_lambda_permission" "lambda" {
 
 # lambda
 module "lambda" {
-  source         = "../../"
-  name           = var.name
-  tags           = var.tags
-  lambda_config  = var.lambda_config
+  source = "../../"
+  name   = var.name
+  tags   = var.tags
+  lambda_config = {
+    handler = "lambda_handler.lambda_handler"
+    s3_bucket = module.artifact.bucket.id
+    s3_key    = "lambda_handler.zip"
+  }
   tracing_config = var.tracing_config
   vpc_config     = var.vpc_config
   policy_arns    = [module.logs.policy_arns["write"]]

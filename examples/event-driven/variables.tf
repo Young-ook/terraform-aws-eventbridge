@@ -34,7 +34,7 @@ variable "tracing_config" {
 }
 
 ### security
-variable "policies" {
+variable "policy_arns" {
   description = "A list of policy ARNs to attach the role for lambda function"
   type        = list(string)
   default     = []

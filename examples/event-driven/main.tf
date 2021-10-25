@@ -32,9 +32,9 @@ module "lambda" {
   name   = var.name
   tags   = var.tags
   lambda_config = {
-    handler = "lambda_handler.lambda_handler"
     s3_bucket = module.artifact.bucket.id
     s3_key    = "lambda_handler.zip"
+    handler   = "lambda_handler.lambda_handler"
   }
   tracing_config = var.tracing_config
   vpc_config     = var.vpc_config

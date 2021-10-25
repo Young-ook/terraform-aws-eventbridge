@@ -1,5 +1,9 @@
 ## aws cloudwatch logs
 
+locals {
+  log_config = var.log_config == null ? local.default_log_config : var.log_config
+}
+
 # security/policy
 resource "aws_iam_policy" "write" {
   name        = format("%s-logs-write", local.name)
@@ -22,5 +26,5 @@ resource "aws_iam_policy" "write" {
 resource "aws_cloudwatch_log_group" "logs" {
   name              = local.log_group_name
   tags              = merge(local.default-tags, var.tags)
-  retention_in_days = lookup(var.log_config, "retension_days", local.default_log_config["retention_days"])
+  retention_in_days = lookup(local.log_config, "retension_days", local.default_log_config["retention_days"])
 }

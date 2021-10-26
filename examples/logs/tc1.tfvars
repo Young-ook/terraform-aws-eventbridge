@@ -8,3 +8,10 @@ namespace = "/aws/codebuild"
 log_config = {
   retension_days = 5
 }
+log_metric_filters = [
+  {
+    pattern   = "ERROR"
+    name      = "ErrorCount"
+    namespace = "MyApp"
+  },
+]

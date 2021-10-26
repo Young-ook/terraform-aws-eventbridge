@@ -20,6 +20,12 @@ variable "namespace" {
   default     = null
 }
 
+variable "log_metric_filters" {
+  description = "Log metric tranform filters"
+  type        = list(any)
+  default     = []
+}
+
 ### description
 variable "name" {
   description = "The logical name of the module instance"

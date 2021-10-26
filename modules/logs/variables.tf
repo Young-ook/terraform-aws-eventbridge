@@ -11,6 +11,12 @@ variable "log_config" {
   default     = {}
 }
 
+variable "log_metric_filters" {
+  description = "Log metric tranform filters"
+  type        = list(any)
+  default     = []
+}
+
 ### description
 variable "name" {
   description = "Name of container image repository"

@@ -14,12 +14,6 @@ variable "log_config" {
   default     = {}
 }
 
-variable "namespace" {
-  description = "The prefix of log group (e.g., /aws/lambda)"
-  type        = string
-  default     = null
-}
-
 variable "log_metric_filters" {
   description = "Log metric tranform filters"
   type        = list(any)

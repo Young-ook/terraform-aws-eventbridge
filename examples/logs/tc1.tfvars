@@ -4,8 +4,8 @@ tags = {
   env  = "dev"
   test = "tc1"
 }
-namespace = "/aws/codebuild"
 log_config = {
+  namespace      = "/aws/codebuild"
   retension_days = 5
 }
 log_metric_filters = [

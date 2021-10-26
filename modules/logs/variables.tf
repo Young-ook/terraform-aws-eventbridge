@@ -1,14 +1,14 @@
 ### log-group
-variable "namespace" {
-  description = "Namespace of log group"
-  type        = string
-  default     = "/aws/lambda"
-}
-
 variable "log_config" {
   description = "Log group configuration"
   type        = map(any)
   default     = {}
+}
+
+variable "log_metric_filters" {
+  description = "Log metric tranform filters"
+  type        = list(any)
+  default     = []
 }
 
 ### description

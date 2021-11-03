@@ -30,7 +30,7 @@ module "alarm" {
 
   metric_query = [
     {
-      id = "error_count"
+      id          = "error_count"
       return_data = true
       metric = [
         {

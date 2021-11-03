@@ -1,9 +1,5 @@
 ## aws cloudwatch logs
 
-locals {
-  log_config = var.log_config == null ? local.default_log_config : var.log_config
-}
-
 # security/policy
 resource "aws_iam_policy" "write" {
   name        = format("%s-logs-write", local.name)

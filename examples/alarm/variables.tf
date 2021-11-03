@@ -7,15 +7,15 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-### log
-variable "log_config" {
-  description = "Log configuration for cloudwatch log group"
+### alarm
+variable "alarm_config" {
+  description = "Alarm configuration for cloudwatch alarm"
   type        = map(any)
   default     = {}
 }
 
-variable "log_metric_filters" {
-  description = "Log metric tranform filters"
+variable "metric_query" {
+  description = "Alarm metric query configurations"
   type        = list(any)
   default     = []
 }
@@ -24,6 +24,12 @@ variable "log_metric_filters" {
 variable "name" {
   description = "The logical name of the module instance"
   type        = string
+}
+
+variable "description" {
+  description = "The description for the alarm."
+  type        = string
+  default     = null
 }
 
 ### tags

@@ -1,7 +1,7 @@
 ### log-group
 variable "log_config" {
   description = "Log group configuration"
-  type        = map(any)
+  type        = object({})
   default     = {}
 }
 

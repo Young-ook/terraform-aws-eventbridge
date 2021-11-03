@@ -6,7 +6,7 @@ locals {
 
 locals {
   default_log_config = {
-    namespace      = "/aws"
+    namespace      = "/default"
     retention_days = 7
   }
   default_log_metric_filter = {

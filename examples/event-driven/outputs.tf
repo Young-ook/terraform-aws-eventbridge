@@ -1,6 +1,6 @@
-output "rules" {
-  description = "EventBridge event rules"
-  value       = aws_cloudwatch_event_rule.rules
+output "event" {
+  description = "Attributes of EventBridge"
+  value       = module.event.eventbridge
 }
 
 output "lambda" {

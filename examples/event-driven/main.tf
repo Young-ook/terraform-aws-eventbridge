@@ -9,18 +9,22 @@ provider "aws" {
 }
 
 # events
-resource "aws_cloudwatch_event_rule" "rules" {
-  name                = join("-", [var.name, "cron"])
-  schedule_expression = "cron(0 20 * * ? *)"
+module "event" {
+  source     = "../../modules/events"
+  name       = join("-", [var.name, "cron"])
+  bus_config = null
+  rule_config = {
+    schedule_expression = "cron(0 20 * * ? *)"
+  }
 }
 
 resource "aws_cloudwatch_event_target" "lambda" {
-  rule = aws_cloudwatch_event_rule.rules.name
+  rule = module.event.eventbridge.rule.name
   arn  = module.lambda.function.arn
 }
 
 resource "aws_lambda_permission" "lambda" {
-  source_arn    = aws_cloudwatch_event_rule.rules.arn
+  source_arn    = module.event.eventbridge.rule.arn
   function_name = module.lambda.function.id
   action        = "lambda:InvokeFunction"
   principal     = "events.amazonaws.com"

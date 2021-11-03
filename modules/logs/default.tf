@@ -1,6 +1,10 @@
 # default variables
 
 locals {
+  log_config = var.log_config == null ? {} : var.log_config
+}
+
+locals {
   default_log_config = {
     namespace      = "/aws"
     retention_days = 7

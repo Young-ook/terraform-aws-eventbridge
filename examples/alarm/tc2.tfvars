@@ -6,10 +6,13 @@ tags = {
   test = "tc2"
 }
 alarm_config = {
-  comparison_operator = "GreaterThanThreshold"
-  datapoints_to_alarm = 1
-  evaluation_periods  = 1
-  threshold           = 3
+  # comparison_operator. following is supported:
+  #   GreaterThanOrEqualToThreshold
+  #   GreaterThanThreshold
+  #   LessThanThreshold
+  #   LessThanOrEqualToThreshold
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 10
 }
 metric_query = [
   {

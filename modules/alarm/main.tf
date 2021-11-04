@@ -4,30 +4,30 @@ resource "aws_cloudwatch_metric_alarm" "alarm" {
   tags              = merge(local.default-tags, var.tags)
 
   # alarm condition
-  comparison_operator                   = lookup(local.alarm_config, "comparison_operator", local.default_alarm_config.comparison_operator)
-  threshold                             = lookup(local.alarm_config, "threshold", local.default_alarm_config.threshold)
-  treat_missing_data                    = lookup(local.alarm_config, "treat_missing_data", local.default_alarm_config.treat_missing_data)
-  datapoints_to_alarm                   = lookup(local.alarm_config, "datapoints_to_alarm", local.default_alarm_config.datapoints_to_alarm)
-  evaluation_periods                    = lookup(local.alarm_config, "evaluation_periods", local.default_alarm_config.evaluation_periods)
-  evaluate_low_sample_count_percentiles = lookup(local.alarm_config, "evaluate_low_sample_count_percentiles", local.default_alarm_config.evaluate_low_sample_count_percentiles)
+  comparison_operator                   = lookup(local.alarm_config, "comparison_operator", "GreaterThanThreshold")
+  threshold                             = lookup(local.alarm_config, "threshold", 1)
+  treat_missing_data                    = lookup(local.alarm_config, "treat_missing_data", "missing")
+  datapoints_to_alarm                   = lookup(local.alarm_config, "datapoints_to_alarm", null)
+  evaluation_periods                    = lookup(local.alarm_config, "evaluation_periods", 1)
+  evaluate_low_sample_count_percentiles = lookup(local.alarm_config, "evaluate_low_sample_count_percentiles", null)
 
   # alarm actions
-  actions_enabled           = lookup(var.alarm_actions_config, "actions_enabled", local.default_alarm_actions_config.enabled)
-  alarm_actions             = lookup(var.alarm_actions_config, "alarm_actions", local.default_alarm_actions_config.alarm_actions)
-  ok_actions                = lookup(var.alarm_actions_config, "ok_actions", local.default_alarm_actions_config.ok_actions)
-  insufficient_data_actions = lookup(var.alarm_actions_config, "insufficient_data_actions", local.default_alarm_actions_config.insufficient_data_actions)
+  actions_enabled           = lookup(var.alarm_actions_config, "actions_enabled", false)
+  alarm_actions             = lookup(var.alarm_actions_config, "alarm_actions", [])
+  ok_actions                = lookup(var.alarm_actions_config, "ok_actions", [])
+  insufficient_data_actions = lookup(var.alarm_actions_config, "insufficient_data_actions", [])
 
   # metric query
   dynamic "metric_query" {
     for_each = local.metric_query
     content {
       id          = lookup(metric_query.value, "id")
-      label       = lookup(metric_query.value, "label", local.default_metric_query.label)
-      return_data = lookup(metric_query.value, "return_data", local.default_metric_query.return_data)
-      expression  = lookup(metric_query.value, "expression", local.default_metric_query.expression)
+      label       = lookup(metric_query.value, "label", null)
+      return_data = lookup(metric_query.value, "return_data", false)
+      expression  = lookup(metric_query.value, "expression", null)
 
       dynamic "metric" {
-        for_each = lookup(metric_query.value, "metric", local.default_metric_query.metric)
+        for_each = lookup(metric_query.value, "metric", [])
         content {
           metric_name = lookup(metric.value, "metric_name")
           namespace   = lookup(metric.value, "namespace")

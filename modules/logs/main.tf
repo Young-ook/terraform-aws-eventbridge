@@ -22,19 +22,19 @@ resource "aws_iam_policy" "write" {
 resource "aws_cloudwatch_log_group" "logs" {
   name              = local.log_group_name
   tags              = merge(local.default-tags, var.tags)
-  retention_in_days = lookup(local.log_config, "retension_days", local.default_log_config["retention_days"])
+  retention_in_days = lookup(local.log_config, "retension_days", 7)
 }
 
 resource "aws_cloudwatch_log_metric_filter" "filters" {
-  for_each       = var.log_metric_filters != null ? { for key, val in var.log_metric_filters : key => val } : {}
+  for_each       = var.log_metric_filters != null ? { for k, v in var.log_metric_filters : k => v } : {}
   name           = lookup(each.value, "name", each.key)
   pattern        = lookup(each.value, "pattern", null)
   log_group_name = aws_cloudwatch_log_group.logs.name
 
   metric_transformation {
-    name          = lookup(each.value, "name", local.default_log_metric_filter.name)
-    namespace     = lookup(each.value, "namespace", local.default_log_metric_filter.namespace)
-    value         = lookup(each.value, "value", local.default_log_metric_filter.value)
-    default_value = lookup(each.value, "default_value", local.default_log_metric_filter.default_value)
+    name          = lookup(each.value, "name", null)
+    namespace     = lookup(each.value, "namespace", null)
+    value         = lookup(each.value, "value", 1)
+    default_value = lookup(each.value, "default_value", null)
   }
 }

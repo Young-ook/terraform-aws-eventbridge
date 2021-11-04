@@ -7,7 +7,7 @@ resource "random_string" "uid" {
 }
 
 locals {
-  namespace      = lookup(local.log_config, "namespace", local.default_log_config.namespace)
+  namespace      = lookup(local.log_config, "namespace", "")
   name           = var.name == null || var.name == "" ? join("-", ["cw", random_string.uid.result]) : var.name
   log_group_name = join("/", [local.namespace, local.name])
   default-tags = merge(

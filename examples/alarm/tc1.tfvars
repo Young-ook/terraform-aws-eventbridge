@@ -6,6 +6,11 @@ tags = {
   test = "tc1"
 }
 alarm_config = {
+  # comparison_operator. following is supported:
+  #   GreaterThanOrEqualToThreshold
+  #   GreaterThanThreshold
+  #   LessThanThreshold
+  #   LessThanOrEqualToThreshold
   comparison_operator = "LessThanThreshold"
   datapoints_to_alarm = 1
   evaluation_periods  = 1

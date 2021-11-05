@@ -1,0 +1,10 @@
+{
+   "detail":{
+      "eventName":["AssumeRole"],
+      "requestParameters":{
+         "roleArn":["arn:aws:iam::123456783657:role/rescue-prod"]
+      }
+   },
+   "detail-type":["AWS API Call via CloudTrail"],
+   "source":["aws.sts"]
+}

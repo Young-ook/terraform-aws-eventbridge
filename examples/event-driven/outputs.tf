@@ -1,6 +1,6 @@
 output "event" {
   description = "Attributes of EventBridge"
-  value       = module.event.eventbridge
+  value       = module.event
 }
 
 output "lambda" {

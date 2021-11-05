@@ -1,9 +1,7 @@
 aws_region = "ap-northeast-2"
-name       = "lambda"
+name       = "lambda-event-driven"
 tags = {
   env = "dev"
 }
-
-log_config = {
-  retension_days = 5
-}
+event_config = null
+log_config   = null

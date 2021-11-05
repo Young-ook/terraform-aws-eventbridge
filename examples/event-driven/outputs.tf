@@ -1,6 +1,6 @@
-output "rules" {
-  description = "EventBridge event rules"
-  value       = aws_cloudwatch_event_rule.rules
+output "event" {
+  description = "Attributes of EventBridge"
+  value       = module.event
 }
 
 output "lambda" {
@@ -11,4 +11,12 @@ output "lambda" {
 output "log" {
   description = "Attributes of cloudwatch log group for the lmabda function"
   value       = module.logs
+}
+
+output "build" {
+  description = "Bash script to start build project"
+  value = join(" ", [
+    "bash -e",
+    module.ci.build,
+  ])
 }

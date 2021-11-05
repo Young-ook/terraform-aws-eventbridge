@@ -16,6 +16,13 @@ variable "vpc_config" {
 ### function
 variable "lambda_config" {
   description = "Lambda function configuration"
+  type        = map(any)
+  default     = {}
+}
+
+variable "event_config" {
+  description = "Event rules configuration"
+  type        = map(any)
   default     = {}
 }
 

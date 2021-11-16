@@ -1,0 +1,20 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - LIB=${WORKDIR}/lib
+      - if [ -d ${LIB} ]; then rm -r ${LIB}; fi
+      - mkdir -p ${LIB}
+      - pip3 install --target ${LIB} urllib3
+  build:
+    commands:
+      - cd ${LIB} && zip -gr9 ${OLDPWD}/${PKG} .
+      - cd ${OLDPWD}
+      - SRC=${WORKDIR}/src
+      - cd ${SRC} && zip ${OLDPWD}/${PKG} *.py
+      - cd ${OLDPWD}
+  post_build:
+    commands:
+      - aws s3 cp ${PKG} s3://${ARTIFACT_BUCKET}/
+artifacts:
+  files: ${PKG}

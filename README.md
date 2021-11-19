@@ -2,7 +2,7 @@
 [AWS Lambda](https://aws.amazon.com/lambda/) is a serverless compute service that lets you run code without provisioning or managing servers, creating workload-aware cluster scaling logic, maintaining event integrations, or managing runtimes. With Lambda, you can run code for virtually any type of application or backend service - all with zero administration.
 
 ## Examples
-- [Event-Driven Computing with AWS Lambda](https://github.com/Young-ook/terraform-aws-lambda/blob/main/examples/event-driven)
+- [Event-Driven Computing with Amazon EventBridge and AWS Lambda](https://github.com/Young-ook/terraform-aws-lambda/blob/main/examples/eventbridge)
 - [AWS Lambda with Amazon VPC](https://github.com/Young-ook/terraform-aws-lambda/blob/main/examples/vpc)
 
 ## Getting started

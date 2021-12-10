@@ -1,0 +1,9 @@
+version: 0.2
+phases:
+  build:
+    commands:
+      - cd ${WORKDIR}
+      - terraform init && terraform apply --auto-approve -var artifact_bucket=${ARTIFACT_BUCKET}
+  post_build:
+    commands:
+      - terraform destroy --auto-approve -var artifact_bucket=${ARTIFACT_BUCKET}

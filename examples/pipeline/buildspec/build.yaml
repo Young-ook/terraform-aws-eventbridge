@@ -10,7 +10,7 @@ phases:
     commands:
       - cd ${LIB} && zip -gr9 ${OLDPWD}/${PKG} .
       - cd ${OLDPWD}
-      - SRC=${WORKDIR}/src
+      - SRC=${WORKDIR}
       - cd ${SRC} && zip ${OLDPWD}/${PKG} *.py
       - cd ${OLDPWD}
   post_build:

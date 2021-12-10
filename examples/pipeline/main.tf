@@ -1,4 +1,4 @@
-# AWS Lambda for event-driven architecture example
+# CodePipeline for CI/CD for AWS Lambda example
 
 terraform {
   required_version = "~> 1.0"
@@ -75,6 +75,22 @@ module "pipeline" {
         }
       }]
     },
+    {
+      name = "Deploy"
+      actions = [{
+        name             = "Deploy"
+        category         = "Build"
+        owner            = "AWS"
+        provider         = "CodeBuild"
+        version          = "1"
+        input_artifacts  = ["source_output"]
+        output_artifacts = ["deploy_output"]
+        run_order        = 3
+        configuration = {
+          ProjectName = module.deploy.project.name
+        }
+      }]
+    },
   ]
   artifact_config = [{
     location = module.artifact.bucket.id
@@ -90,7 +106,7 @@ module "build" {
     image           = "aws/codebuild/standard:4.0"
     privileged_mode = true
     environment_variables = {
-      WORKDIR         = "examples/pipeline"
+      WORKDIR         = "examples/pipeline/lambda"
       PKG             = "lambda_handler.zip"
       ARTIFACT_BUCKET = module.artifact.bucket.id
     }
@@ -98,7 +114,7 @@ module "build" {
   source_config = {
     type      = "GITHUB"
     location  = "https://github.com/Young-ook/terraform-aws-lambda.git"
-    buildspec = "examples/event-driven/buildspec.yml"
+    buildspec = "examples/pipeline/buildspec/build.yaml"
     version   = "main"
   }
   policy_arns = [
@@ -111,22 +127,20 @@ module "deploy" {
   name   = var.name
   tags   = var.tags
   environment_config = {
-    image           = "aws/codebuild/standard:4.0"
-    privileged_mode = true
+    image = "hashicorp/terraform"
     environment_variables = {
-      WORKDIR         = "examples/pipeline"
-      PKG             = "lambda_handler.zip"
+      WORKDIR         = "examples/pipeline/lambda"
       ARTIFACT_BUCKET = module.artifact.bucket.id
     }
   }
   source_config = {
     type      = "GITHUB"
     location  = "https://github.com/Young-ook/terraform-aws-lambda.git"
-    buildspec = "examples/event-driven/buildspec.yml"
+    buildspec = "examples/pipeline/buildspec/deploy.yaml"
     version   = "main"
   }
   policy_arns = [
-    module.artifact.policy_arns["write"],
+    "arn:aws:iam::aws:policy/AdministratorAccess",
   ]
 }
 
@@ -136,4 +150,3 @@ module "logs" {
   name       = var.name
   log_config = var.log_config
 }
-

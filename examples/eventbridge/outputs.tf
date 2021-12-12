@@ -13,10 +13,7 @@ output "log" {
   value       = module.logs
 }
 
-output "build" {
-  description = "Bash script to start build project"
-  value = join(" ", [
-    "bash -e",
-    module.ci.build,
-  ])
+output "sfn" {
+  description = "Attributes of step functions state machine for the lmabda function"
+  value       = module.sfn
 }

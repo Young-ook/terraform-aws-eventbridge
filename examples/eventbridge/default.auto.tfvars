@@ -1,5 +1,5 @@
 aws_region = "ap-northeast-2"
-name       = "lambda-event-driven"
+name       = "lambda-eda"
 tags = {
   env = "dev"
 }

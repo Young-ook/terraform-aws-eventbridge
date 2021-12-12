@@ -10,22 +10,18 @@ cd terraform-aws-lambda/examples/eventbridge
 ## Setup
 [This](https://github.com/Young-ook/terraform-aws-lambda/blob/main/examples/eventbridge/main.tf) is the example of terraform configuration file to create a lambda function. Check out and apply it using terraform command.
 
+If you don't have the terraform tool in your environment, go to the main [page](https://github.com/Young-ook/terraform-aws-lambda) of this repository and follow the installation instructions.
+
 ## Terraform
-In this example, the lambda function depends on the artifact file in the s3 bucket. First we need to build the ci and s3 bucket modules. Run terraform:
+Run terraform:
 ```
 $ terraform init
-$ terraform apply -target module.ci -target module.artifact
+$ terraform apply
 ```
 Also you can use the `-var-file` option for customized paramters when you run the terraform plan/apply command.
 ```
-$ terraform plan -var-file tc1.tfvars
-$ terraform apply -var-file tc1.tfvars -target module.ci -target module.artifact
-```
-
-Next, run terraform on other resources including lambda function:
-**[Note}** Don't forget you have to use the `-var-file` option if you ran terraform apply command with extra variable files in the previous step.
-```
-$ terraform apply
+$ terraform init
+$ terraform apply -var-file tc1.tfvars
 ```
 
 ## Clean up

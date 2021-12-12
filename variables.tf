@@ -1,9 +1,3 @@
-variable "enabled" {
-  description = "A conditional indicator to enable"
-  type        = bool
-  default     = true
-}
-
 ### computing/function
 variable "lambda_config" {
   description = "Lambda function configuration"

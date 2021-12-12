@@ -23,7 +23,7 @@ locals {
 
 module "event" {
   for_each    = local.events
-  source      = "../../modules/events"
+  source      = "Young-ook/lambda/aws//modules/events"
   name        = join("-", [var.name, each.key])
   rule_config = each.value.rule_config
 }
@@ -42,9 +42,17 @@ resource "aws_lambda_permission" "lambda" {
   principal     = "events.amazonaws.com"
 }
 
+# zip arhive
+data "archive_file" "lambda_zip_file" {
+  output_path = join("/", [path.module, "lambda_handler.zip"])
+  source_dir  = join("/", [path.module, "app"])
+  excludes    = ["__init__.py", "*.pyc"]
+  type        = "zip"
+}
+
 # lambda
 module "lambda" {
-  source = "../../"
+  source = "Young-ook/lambda/aws"
   name   = var.name
   tags   = var.tags
   lambda_config = {
@@ -62,36 +70,4 @@ module "logs" {
   source     = "Young-ook/lambda/aws//modules/logs"
   name       = var.name
   log_config = var.log_config
-}
-
-# pipeline
-module "ci" {
-  source = "Young-ook/spinnaker/aws//modules/codebuild"
-  name   = var.name
-  tags   = var.tags
-  environment_config = {
-    image           = "aws/codebuild/standard:4.0"
-    privileged_mode = true
-    environment_variables = {
-      WORKDIR         = "examples/event-driven"
-      PKG             = lookup(var.lambda_config, "package", "lambda_handler.zip")
-      ARTIFACT_BUCKET = module.artifact.bucket.id
-    }
-  }
-  source_config = {
-    type      = "GITHUB"
-    location  = "https://github.com/Young-ook/terraform-aws-lambda.git"
-    buildspec = "examples/event-driven/buildspec.yml"
-    version   = "main"
-  }
-  policy_arns = [
-    module.artifact.policy_arns["write"],
-  ]
-}
-
-module "artifact" {
-  source        = "Young-ook/spinnaker/aws//modules/s3"
-  name          = var.name
-  tags          = var.tags
-  force_destroy = true
 }

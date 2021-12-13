@@ -34,3 +34,6 @@ local.*.tfvars
 
 # Local .DS_Store
 **/.DS_Store
+
+# Local .zip files for lambda package archive
+**/examples/**/*.zip

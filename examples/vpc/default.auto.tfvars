@@ -4,12 +4,11 @@ name       = "lambda-vpc"
 tags = {
   env = "dev"
 }
-
 lambda_config = {
   package = "lambda_handler.zip"
   handler = "lambda_handler.lambda_handler"
 }
-
+tracing_config = {}
 log_config = {
   retension_days = 5
 }

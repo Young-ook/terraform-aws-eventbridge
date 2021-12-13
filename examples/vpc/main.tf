@@ -10,15 +10,15 @@ provider "aws" {
 
 # vpc
 module "vpc" {
-  source     = "Young-ook/spinnaker/aws//modules/spinnaker-aware-aws-vpc"
-  name       = var.name
-  tags       = var.tags
-  azs        = var.azs
-  cidr       = var.cidr
-  enable_igw = true
-  enable_ngw = true
-  single_ngw = true
-  vpc_endpoint_config = [
+  source = "Young-ook/sagemaker/aws//modules/vpc"
+  name   = var.name
+  tags   = var.tags
+  vpc_config = {
+    azs         = var.azs
+    cidr        = var.cidr
+    subnet_type = "private"
+  }
+  vpce_config = [
     {
       service             = "s3"
       type                = "Interface"
@@ -40,7 +40,6 @@ module "vpc" {
       type                = "Interface"
       private_dns_enabled = true
     },
-
   ]
 }
 
@@ -66,10 +65,17 @@ resource "aws_security_group" "lambda" {
   }
 }
 
+# zip arhive
+data "archive_file" "lambda_zip_file" {
+  output_path = join("/", [path.module, "lambda_handler.zip"])
+  source_dir  = join("/", [path.module, "app"])
+  excludes    = ["__init__.py", "*.pyc"]
+  type        = "zip"
+}
 
 # lambda
 module "lambda" {
-  source         = "../../"
+  source         = "Young-ook/lambda/aws"
   name           = var.name
   tags           = var.tags
   lambda_config  = var.lambda_config

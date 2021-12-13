@@ -23,34 +23,101 @@ locals {
 
 module "event" {
   for_each    = local.events
-  source      = "../../modules/events"
+  source      = "Young-ook/lambda/aws//modules/events"
   name        = join("-", [var.name, each.key])
   rule_config = each.value.rule_config
 }
 
-resource "aws_cloudwatch_event_target" "lambda" {
+resource "aws_cloudwatch_event_target" "sfn" {
   for_each = local.events
   rule     = module.event[each.key].eventbridge.rule.name
-  arn      = module.lambda.function.arn
+  arn      = module.sfn.states.arn
+  role_arn = aws_iam_role.invoke-sfn.arn
 }
 
-resource "aws_lambda_permission" "lambda" {
-  for_each      = local.events
-  source_arn    = module.event[each.key].eventbridge.rule.arn
-  function_name = module.lambda.function.id
-  action        = "lambda:InvokeFunction"
-  principal     = "events.amazonaws.com"
+module "aws" {
+  source = "Young-ook/spinnaker/aws//modules/aws-partitions"
+}
+
+resource "aws_iam_role" "invoke-sfn" {
+  name = join("-", [var.name, "invoke-sfn"])
+  tags = var.tags
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = format("events.%s", module.aws.partition.dns_suffix)
+      }
+    }]
+    Version = "2012-10-17"
+  })
+
+  inline_policy {
+    name = join("-", [var.name, "invoke-sfn"])
+    policy = jsonencode({
+      Version = "2012-10-17",
+      Statement = [{
+        Action   = ["states:StartExecution"]
+        Effect   = "Allow"
+        Resource = module.sfn.states.arn
+      }]
+    })
+  }
+}
+
+# step functions
+module "sfn" {
+  source      = "../../modules/stepfunctions"
+  name        = var.name
+  tags        = var.tags
+  policy_arns = [aws_iam_policy.invoke-lambda.arn]
+  sfn_config = {
+    definition = <<EOF
+{
+  "Comment": "A Hello World example of the Amazon States Language using an AWS Lambda Function",
+  "StartAt": "HelloWorld",
+  "States": {
+    "HelloWorld": {
+      "Type": "Task",
+      "Resource": "${module.lambda.function.arn}",
+      "End": true
+    }
+  }
+}
+EOF
+  }
+}
+
+resource "aws_iam_policy" "invoke-lambda" {
+  name = join("-", [var.name, "invoke-lambda"])
+  tags = var.tags
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action   = ["lambda:InvokeFunction"]
+      Effect   = "Allow"
+      Resource = module.lambda.function.arn
+    }]
+  })
+}
+
+# zip arhive
+data "archive_file" "lambda_zip_file" {
+  output_path = join("/", [path.module, "lambda_handler.zip"])
+  source_dir  = join("/", [path.module, "app"])
+  excludes    = ["__init__.py", "*.pyc"]
+  type        = "zip"
 }
 
 # lambda
 module "lambda" {
-  source = "../../"
+  source = "Young-ook/lambda/aws"
   name   = var.name
   tags   = var.tags
   lambda_config = {
-    s3_bucket = module.artifact.bucket.id
-    s3_key    = "lambda_handler.zip"
-    handler   = "lambda_handler.lambda_handler"
+    package = "lambda_handler.zip"
+    handler = "lambda_handler.lambda_handler"
   }
   tracing_config = var.tracing_config
   vpc_config     = var.vpc_config
@@ -62,36 +129,4 @@ module "logs" {
   source     = "Young-ook/lambda/aws//modules/logs"
   name       = var.name
   log_config = var.log_config
-}
-
-# pipeline
-module "ci" {
-  source = "Young-ook/spinnaker/aws//modules/codebuild"
-  name   = var.name
-  tags   = var.tags
-  environment_config = {
-    image           = "aws/codebuild/standard:4.0"
-    privileged_mode = true
-    environment_variables = {
-      WORKDIR         = "examples/event-driven"
-      PKG             = lookup(var.lambda_config, "package", "lambda_handler.zip")
-      ARTIFACT_BUCKET = module.artifact.bucket.id
-    }
-  }
-  source_config = {
-    type      = "GITHUB"
-    location  = "https://github.com/Young-ook/terraform-aws-lambda.git"
-    buildspec = "examples/event-driven/buildspec.yml"
-    version   = "main"
-  }
-  policy_arns = [
-    module.artifact.policy_arns["write"],
-  ]
-}
-
-module "artifact" {
-  source        = "Young-ook/spinnaker/aws//modules/s3"
-  name          = var.name
-  tags          = var.tags
-  force_destroy = true
 }

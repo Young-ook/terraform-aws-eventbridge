@@ -8,29 +8,40 @@ provider "aws" {
   region = var.aws_region
 }
 
-# events
+# eventbridge rules
+#
+# This is a example of scheduling expression, cron(0 20 * * ? *) or rate(5 minutes).
+# At least one of schedule_expression or event_pattern is required for event rule config.
+# It can only be used on the default event bus. For more information, refer to the
+# AWS documentation Schedule Expressions for Rules:
+# https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
 locals {
-  event_config = var.event_config == null ? {} : var.event_config
-  pattern_event = {
-    pattern = {
+  events = [
+    {
+      name = "scheduled_job"
+      rule_config = {
+        schedule_expression = "rate(5 minutes)"
+      }
+    },
+    {
+      name = "pattern_event"
       rule_config = {
         event_pattern = file("event-pattern-example.json")
       }
     }
-  }
-  events = merge(local.pattern_event, local.event_config)
+  ]
 }
 
 module "event" {
-  for_each    = local.events
-  source      = "Young-ook/lambda/aws//modules/events"
+  for_each    = { for e in local.events : e.name => e }
+  source      = "../../modules/eventbridge"
   name        = join("-", [var.name, each.key])
   rule_config = each.value.rule_config
 }
 
 resource "aws_cloudwatch_event_target" "sfn" {
-  for_each = local.events
-  rule     = module.event[each.key].eventbridge.rule.name
+  for_each = { for e in local.events : e.name => e }
+  rule     = module.event[each.key].rule.name
   arn      = module.sfn.states.arn
   role_arn = aws_iam_role.invoke-sfn.arn
 }

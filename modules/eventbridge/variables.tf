@@ -1,13 +1,11 @@
 ### event bridge
 variable "bus_config" {
   description = "Event bus configuration"
-  type        = map(any)
   default     = {}
 }
 
 variable "rule_config" {
   description = "Event rule configuration"
-  type        = map(any)
   default     = {}
 }
 

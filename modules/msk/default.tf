@@ -7,10 +7,11 @@ locals {
     security_groups = []
   }
   default_cluster_config = {
-    kafka_version  = "2.6.2"
-    instance_count = "3"              # number of broker nodes
-    instance_type  = "kafka.m5.large" # ec2 instance type for broker node
-    disk_size      = 1000             # ebs disk size in GB
+    properties_file = "${path.module}/default.server.properties"
+    kafka_version   = "2.6.2"
+    instance_count  = "3"              # number of broker nodes
+    instance_type   = "kafka.m5.large" # ec2 instance type for broker node
+    disk_size       = 1000             # ebs disk size in GB
     scaling_policy = {
       max_disk_size    = 2000
       tracking_target  = 80

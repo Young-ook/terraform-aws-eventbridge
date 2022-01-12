@@ -11,16 +11,14 @@ locals {
   disk_size       = lookup(var.cluster_config, "disk_size", local.default_cluster_config.disk_size)
   scaling_policy  = lookup(var.cluster_config, "scaling_policy", local.default_cluster_config.scaling_policy)
   monitoring      = lookup(var.cluster_config, "monitoring", local.default_cluster_config.monitoring)
+  properties_file = lookup(var.cluster_config, "properties_file", local.default_cluster_config.properties_file)
 }
 
 ## cluster
 resource "aws_msk_configuration" "kafka" {
   name              = local.name
   kafka_versions    = [local.kafka_version]
-  server_properties = <<PROPERTIES
-auto.create.topics.enable = true
-delete.topic.enable = true
-PROPERTIES
+  server_properties = file(local.properties_file)
 }
 
 resource "aws_msk_cluster" "kafka" {

@@ -32,15 +32,9 @@ module "logbucket" {
 
 # kafka cluster
 module "msk" {
-  source = "../../modules/msk"
-  name   = var.name
-  cluster_config = {
-    kafka_version = var.msk_config.kafka_version
-    monitoring = {
-      prometheus_jmx_exporter_enabled  = false
-      prometheus_node_exporter_enabled = true
-    }
-  }
+  source         = "../../modules/msk"
+  name           = var.name
+  cluster_config = var.msk_config
   vpc_config = {
     vpc     = module.vpc.vpc.id
     subnets = slice(values(module.vpc.subnets["public"]), 0, 3)

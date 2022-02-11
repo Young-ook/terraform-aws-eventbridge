@@ -5,7 +5,7 @@ variable "vpc_config" {
 }
 
 ### kafka
-variable "cluster_config" {
+variable "msk_config" {
   description = "Kafka cluster configuration"
   default     = {}
 }

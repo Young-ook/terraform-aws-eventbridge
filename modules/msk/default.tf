@@ -6,7 +6,7 @@ locals {
     subnets         = null
     security_groups = []
   }
-  default_cluster_config = {
+  default_msk_config = {
     properties_file = "${path.module}/default.server.properties"
     kafka_version   = "2.6.2"
     instance_count  = "3"              # number of broker nodes

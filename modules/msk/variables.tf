@@ -5,7 +5,7 @@ variable "vpc_config" {
 }
 
 ### kafka
-variable "cluster_config" {
+variable "msk_config" {
   description = "Kafka cluster configuration"
   default     = {}
 }
@@ -18,9 +18,8 @@ variable "log_config" {
 
 ### description
 variable "name" {
-  description = "Name of metric alarm. This name must be unique within the AWS account"
+  description = "Name of Kafka cluster"
   type        = string
-  default     = ""
 }
 
 ### tags

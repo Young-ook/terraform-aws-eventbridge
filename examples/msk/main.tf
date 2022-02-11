@@ -2,6 +2,12 @@
 
 terraform {
   required_version = "~> 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "< 4.0"
+    }
+  }
 }
 
 provider "aws" {
@@ -32,9 +38,9 @@ module "logbucket" {
 
 # kafka cluster
 module "msk" {
-  source         = "../../modules/msk"
-  name           = var.name
-  cluster_config = var.msk_config
+  source     = "../../modules/msk"
+  name       = var.name
+  msk_config = var.msk_config
   vpc_config = {
     vpc     = module.vpc.vpc.id
     subnets = slice(values(module.vpc.subnets["public"]), 0, 3)

@@ -10,14 +10,12 @@ variable "aws_region" {
 ### alarm
 variable "alarm_metric" {
   description = "Alarm configuration for cloudwatch alarm"
-  type        = map(any)
-  default     = {}
+  type        = any
 }
 
 variable "metric_query" {
   description = "Alarm metric query configurations"
-  type        = list(any)
-  default     = []
+  type        = any
 }
 
 ### description

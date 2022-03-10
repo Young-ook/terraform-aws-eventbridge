@@ -1,6 +1,6 @@
 # default variables
 
 locals {
-  alarm_config = var.alarm_config == null ? {} : var.alarm_config
+  alarm_metric = var.alarm_metric == null ? {} : var.alarm_metric
   metric_query = var.metric_query == null ? [] : var.metric_query
 }

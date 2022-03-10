@@ -10,5 +10,6 @@ locals {
   name = var.name == null || var.name == "" ? join("-", ["cw", random_string.uid.result]) : var.name
   default-tags = merge(
     { "terraform.io" = "managed" },
+    { "Name" = local.name },
   )
 }

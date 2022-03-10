@@ -1,11 +1,11 @@
 ### metric alarm
-variable "alarm_config" {
+variable "alarm_metric" {
   description = "Metric alarm configuration"
   type        = map(any)
   default     = {}
 }
 
-variable "alarm_actions_config" {
+variable "alarm_actions" {
   description = "Metric alarm actions configuration"
   type        = map(any)
   default     = {}
@@ -13,7 +13,7 @@ variable "alarm_actions_config" {
 
 variable "metric_query" {
   description = "Enables you to create an alarm based on a metric math expression. You may specify at most 20."
-  type        = any
+  type        = list(any)
   default     = []
 }
 

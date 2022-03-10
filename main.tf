@@ -46,8 +46,8 @@ resource "aws_lambda_function" "lambda" {
       for k, v in [var.vpc] : k => v if length(var.vpc) > 0
     } : {}
     content {
-      subnet_ids         = lookup(vpc.value, "subnets")
-      security_group_ids = lookup(vpc.value, "security_groups")
+      subnet_ids         = lookup(vpc_config.value, "subnets")
+      security_group_ids = lookup(vpc_config.value, "security_groups")
     }
   }
 }

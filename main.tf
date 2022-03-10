@@ -6,16 +6,16 @@ module "aws" {
 
 resource "aws_lambda_function" "lambda" {
   function_name                  = local.name
-  filename                       = lookup(var.lambda_config, "package", null)
-  s3_bucket                      = lookup(var.lambda_config, "s3_bucket", null)
-  s3_key                         = lookup(var.lambda_config, "s3_key", null)
-  s3_object_version              = lookup(var.lambda_config, "s3_object_version", null)
-  handler                        = lookup(var.lambda_config, "handler", local.default_lambda_config["handler"])
-  runtime                        = lookup(var.lambda_config, "runtime", local.default_lambda_config["runtime"])
-  memory_size                    = lookup(var.lambda_config, "memory", local.default_lambda_config["memory"])
-  timeout                        = lookup(var.lambda_config, "timeout", local.default_lambda_config["timeout"])
-  reserved_concurrent_executions = lookup(var.lambda_config, "provisioned_concurrency", local.default_lambda_config["provisioned_concurrency"])
-  publish                        = lookup(var.lambda_config, "publish", local.default_lambda_config["publish"])
+  filename                       = lookup(var.lambda, "package", null)
+  s3_bucket                      = lookup(var.lambda, "s3_bucket", null)
+  s3_key                         = lookup(var.lambda, "s3_key", null)
+  s3_object_version              = lookup(var.lambda, "s3_object_version", null)
+  handler                        = lookup(var.lambda, "handler", local.default_lambda_config["handler"])
+  runtime                        = lookup(var.lambda, "runtime", local.default_lambda_config["runtime"])
+  memory_size                    = lookup(var.lambda, "memory", local.default_lambda_config["memory"])
+  timeout                        = lookup(var.lambda, "timeout", local.default_lambda_config["timeout"])
+  reserved_concurrent_executions = lookup(var.lambda, "provisioned_concurrency", local.default_lambda_config["provisioned_concurrency"])
+  publish                        = lookup(var.lambda, "publish", local.default_lambda_config["publish"])
   role                           = aws_iam_role.lambda.arn
   tags                           = merge(local.default-tags, var.tags)
 
@@ -24,17 +24,17 @@ resource "aws_lambda_function" "lambda" {
   }
 
   dynamic "environment" {
-    for_each = lookup(var.lambda_config, "environment_variables", null) != null ? {
-      for key, val in [lookup(var.lambda_config, "environment_variables")] : key => val
+    for_each = lookup(var.lambda, "environment_variables", null) != null ? {
+      for k, v in [lookup(var.lambda, "environment_variables")] : k => v
     } : {}
     content {
-      variables = lookup(var.lambda_config, "environment_variables")
+      variables = lookup(var.lambda, "environment_variables")
     }
   }
 
   dynamic "tracing_config" {
-    for_each = var.tracing_config != null ? {
-      for key, val in [var.tracing_config] : key => val
+    for_each = var.tracing != null ? {
+      for k, v in [var.tracing] : k => v
     } : {}
     content {
       mode = lookup(tracing_config.value, "mode", local.default_tracing_config["mode"])
@@ -42,12 +42,12 @@ resource "aws_lambda_function" "lambda" {
   }
 
   dynamic "vpc_config" {
-    for_each = var.vpc_config != null ? {
-      for key, val in [var.vpc_config] : key => val if length(var.vpc_config) > 0
+    for_each = var.vpc != null ? {
+      for k, v in [var.vpc] : k => v if length(var.vpc) > 0
     } : {}
     content {
-      subnet_ids         = lookup(vpc_config.value, "subnets")
-      security_group_ids = lookup(vpc_config.value, "security_groups")
+      subnet_ids         = lookup(vpc.value, "subnets")
+      security_group_ids = lookup(vpc.value, "security_groups")
     }
   }
 }

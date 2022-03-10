@@ -18,14 +18,14 @@ data "archive_file" "lambda_zip_file" {
 
 # lambda
 module "lambda" {
-  depends_on     = [data.archive_file.lambda_zip_file]
-  source         = "Young-ook/lambda/aws"
-  name           = var.name
-  tags           = var.tags
-  lambda_config  = var.lambda_config
-  tracing_config = var.tracing_config
-  vpc_config     = var.vpc_config
-  policy_arns    = [module.logs.policy_arns["write"]]
+  depends_on  = [data.archive_file.lambda_zip_file]
+  source      = "Young-ook/lambda/aws"
+  name        = var.name
+  tags        = var.tags
+  lambda      = var.lambda_config
+  tracing     = var.tracing_config
+  vpc         = var.vpc_config
+  policy_arns = [module.logs.policy_arns["write"]]
 }
 
 # lambda invokation for test

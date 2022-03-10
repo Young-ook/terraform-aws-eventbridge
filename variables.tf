@@ -1,25 +1,25 @@
 ### computing/function
-variable "lambda_config" {
+variable "lambda" {
   description = "Lambda function configuration"
   default     = {}
 }
 
 ### computing/layer
-variable "layer_config" {
+variable "layer" {
   description = "Lambda layer configuration"
   type        = map(any)
   default     = {}
 }
 
 ### network
-variable "vpc_config" {
+variable "vpc" {
   description = "VPC configuration for function"
   type        = map(any)
   default     = {}
 }
 
 ### tracing
-variable "tracing_config" {
+variable "tracing" {
   description = "AWS X-ray tracing configuration for function"
   type        = map(any)
   default     = {}

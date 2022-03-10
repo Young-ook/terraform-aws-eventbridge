@@ -126,13 +126,13 @@ module "lambda" {
   source = "Young-ook/lambda/aws"
   name   = var.name
   tags   = var.tags
-  lambda_config = {
+  lambda = {
     package = "lambda_handler.zip"
     handler = "lambda_handler.lambda_handler"
   }
-  tracing_config = var.tracing_config
-  vpc_config     = var.vpc_config
-  policy_arns    = [module.logs.policy_arns["write"]]
+  tracing     = var.tracing_config
+  vpc         = var.vpc_config
+  policy_arns = [module.logs.policy_arns["write"]]
 }
 
 # cloudwatch logs

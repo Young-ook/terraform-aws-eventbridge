@@ -33,10 +33,10 @@ locals {
 }
 
 module "event" {
-  for_each    = { for e in local.events : e.name => e }
-  source      = "../../modules/eventbridge"
-  name        = join("-", [var.name, each.key])
-  rule_config = each.value.rule_config
+  for_each = { for e in local.events : e.name => e }
+  source   = "../../modules/eventbridge"
+  name     = join("-", [var.name, each.key])
+  rule     = each.value.rule_config
 }
 
 resource "aws_cloudwatch_event_target" "sfn" {
@@ -123,9 +123,10 @@ data "archive_file" "lambda_zip_file" {
 
 # lambda
 module "lambda" {
-  source = "Young-ook/lambda/aws"
-  name   = var.name
-  tags   = var.tags
+  source  = "Young-ook/lambda/aws"
+  version = "> 0.1"
+  name    = var.name
+  tags    = var.tags
   lambda = {
     package = "lambda_handler.zip"
     handler = "lambda_handler.lambda_handler"

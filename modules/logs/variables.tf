@@ -1,5 +1,5 @@
 ### log-group
-variable "log_config" {
+variable "log_group" {
   description = "Log group configuration"
   type        = map(any)
   default     = {}

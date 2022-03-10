@@ -1,5 +1,5 @@
 # default variables
 
 locals {
-  log_config = var.log_config == null ? {} : var.log_config
+  log_group = var.log_group == null ? {} : var.log_group
 }

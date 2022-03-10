@@ -12,17 +12,18 @@ provider "aws" {
 module "logs" {
   source             = "../../modules/logs"
   name               = var.name
-  log_config         = var.log_config
+  log_group          = var.log_group
   log_metric_filters = var.log_metric_filters
 }
 
 # cloudwatch alarm
 module "alarm" {
-  source      = "../../modules/alarm"
+  source      = "Young-ook/lambda/aws//modules/alarm"
+  version     = "> 0.1.1"
   name        = join("-", [var.name, module.logs.log_metric_filters.0.name])
   description = "Log errors are too high"
 
-  alarm_config = {
+  alarm_metric = {
     comparison_operator = "GreaterThanOrEqualToThreshold"
     evaluation_periods  = 1
     threshold           = 10

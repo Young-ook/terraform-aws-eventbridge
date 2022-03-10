@@ -4,7 +4,7 @@ tags = {
   env  = "dev"
   test = "tc1"
 }
-log_config = {
+log_group = {
   namespace      = "/aws/codebuild"
   retension_days = 5
 }

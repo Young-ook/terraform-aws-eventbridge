@@ -8,7 +8,7 @@ variable "aws_region" {
 }
 
 ### log
-variable "log_config" {
+variable "log_group" {
   description = "Log configuration for cloudwatch log group"
   type        = map(any)
   default     = {}

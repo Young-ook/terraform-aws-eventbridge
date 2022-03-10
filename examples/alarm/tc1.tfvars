@@ -5,7 +5,7 @@ tags = {
   env  = "dev"
   test = "tc1"
 }
-alarm_config = {
+alarm_metric = {
   # comparison_operator. following is supported:
   #   GreaterThanOrEqualToThreshold
   #   GreaterThanThreshold

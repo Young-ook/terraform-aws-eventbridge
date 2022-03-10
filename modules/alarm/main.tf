@@ -4,22 +4,22 @@ resource "aws_cloudwatch_metric_alarm" "alarm" {
   tags              = merge(local.default-tags, var.tags)
 
   # alarm condition
-  comparison_operator                   = lookup(local.alarm_config, "comparison_operator", "GreaterThanThreshold")
-  threshold                             = lookup(local.alarm_config, "threshold", 1)
-  treat_missing_data                    = lookup(local.alarm_config, "treat_missing_data", "missing")
-  datapoints_to_alarm                   = lookup(local.alarm_config, "datapoints_to_alarm", null)
-  evaluation_periods                    = lookup(local.alarm_config, "evaluation_periods", 1)
-  evaluate_low_sample_count_percentiles = lookup(local.alarm_config, "evaluate_low_sample_count_percentiles", null)
+  comparison_operator                   = lookup(var.alarm_metric, "comparison_operator", "GreaterThanThreshold")
+  threshold                             = lookup(var.alarm_metric, "threshold", 1)
+  treat_missing_data                    = lookup(var.alarm_metric, "treat_missing_data", "missing")
+  datapoints_to_alarm                   = lookup(var.alarm_metric, "datapoints_to_alarm", null)
+  evaluation_periods                    = lookup(var.alarm_metric, "evaluation_periods", 1)
+  evaluate_low_sample_count_percentiles = lookup(var.alarm_metric, "evaluate_low_sample_count_percentiles", null)
 
   # alarm actions
-  actions_enabled           = lookup(var.alarm_actions_config, "actions_enabled", false)
-  alarm_actions             = lookup(var.alarm_actions_config, "alarm_actions", [])
-  ok_actions                = lookup(var.alarm_actions_config, "ok_actions", [])
-  insufficient_data_actions = lookup(var.alarm_actions_config, "insufficient_data_actions", [])
+  actions_enabled           = lookup(var.alarm_actions, "actions_enabled", false)
+  alarm_actions             = lookup(var.alarm_actions, "alarm_actions", [])
+  ok_actions                = lookup(var.alarm_actions, "ok_actions", [])
+  insufficient_data_actions = lookup(var.alarm_actions, "insufficient_data_actions", [])
 
   # metric query
   dynamic "metric_query" {
-    for_each = local.metric_query
+    for_each = var.metric_query
     content {
       id          = lookup(metric_query.value, "id")
       label       = lookup(metric_query.value, "label", null)

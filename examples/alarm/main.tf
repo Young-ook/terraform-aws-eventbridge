@@ -13,6 +13,6 @@ module "alarm" {
   source       = "../../modules/alarm"
   name         = var.name
   description  = var.description
-  alarm_config = var.alarm_config
+  alarm_metric = var.alarm_metric
   metric_query = var.metric_query
 }

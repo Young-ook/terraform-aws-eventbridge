@@ -75,12 +75,12 @@ data "archive_file" "lambda_zip_file" {
 
 # lambda
 module "lambda" {
-  source         = "Young-ook/lambda/aws"
-  name           = var.name
-  tags           = var.tags
-  lambda_config  = var.lambda_config
-  tracing_config = var.tracing_config
-  vpc_config = {
+  source  = "Young-ook/lambda/aws"
+  name    = var.name
+  tags    = var.tags
+  lambda  = var.lambda_config
+  tracing = var.tracing_config
+  vpc = {
     subnets         = values(module.vpc.subnets["private"])
     security_groups = [aws_security_group.lambda.id]
   }

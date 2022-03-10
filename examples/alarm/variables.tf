@@ -8,7 +8,7 @@ variable "aws_region" {
 }
 
 ### alarm
-variable "alarm_config" {
+variable "alarm_metric" {
   description = "Alarm configuration for cloudwatch alarm"
   type        = map(any)
   default     = {}

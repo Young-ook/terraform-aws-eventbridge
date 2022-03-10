@@ -3,5 +3,5 @@ name       = null
 tags = {
   env = "dev"
 }
-alarm_config = null
+alarm_metric = null
 metric_query = null

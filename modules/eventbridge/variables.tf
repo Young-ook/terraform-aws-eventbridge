@@ -1,10 +1,10 @@
 ### event bridge
-variable "bus_config" {
+variable "bus" {
   description = "Event bus configuration"
   default     = {}
 }
 
-variable "rule_config" {
+variable "rule" {
   description = "Event rule configuration"
   default     = {}
 }

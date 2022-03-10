@@ -1,13 +1,13 @@
 # default variables
 
 locals {
-  default_rule_config = {
+  default_rule = {
     schedule_expression = null
     event_pattern       = null
   }
-  default_bus_config = {
+  default_bus = {
     event_source_name = null
   }
-  rule_config = var.rule_config == null ? {} : var.rule_config
-  bus_config  = var.bus_config == null ? {} : var.bus_config
+  rule = var.rule == null ? {} : var.rule
+  bus  = var.bus == null ? {} : var.bus
 }

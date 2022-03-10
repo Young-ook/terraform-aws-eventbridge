@@ -22,7 +22,7 @@ resource "aws_iam_policy" "write" {
 resource "aws_cloudwatch_log_group" "logs" {
   name              = local.log_group_name
   tags              = merge(local.default-tags, var.tags)
-  retention_in_days = lookup(local.log_config, "retension_days", 7)
+  retention_in_days = lookup(local.log_group, "retension_days", 7)
 }
 
 resource "aws_cloudwatch_log_metric_filter" "filters" {

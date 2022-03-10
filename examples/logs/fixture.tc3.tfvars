@@ -4,6 +4,6 @@ tags = {
   env  = "dev"
   test = "tc3"
 }
-log_config = {
+log_group = {
   retension_days = 5
 }

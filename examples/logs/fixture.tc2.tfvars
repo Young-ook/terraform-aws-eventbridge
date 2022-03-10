@@ -4,4 +4,4 @@ tags = {
   env  = "dev"
   test = "tc2"
 }
-log_config = null
+log_group = null

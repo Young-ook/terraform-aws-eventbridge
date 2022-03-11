@@ -2,18 +2,30 @@
 variable "bus" {
   description = "Event bus configuration"
   default     = {}
+  validation {
+    condition     = var.bus != null
+    error_message = "Configuration for custom eventbridge bus must not be null."
+  }
 }
 
-variable "rule" {
-  description = "Event rule configuration"
-  default     = {}
+variable "rules" {
+  description = "List of event rules configuration"
+  default     = []
+  validation {
+    condition     = var.rules != null && length(var.rules) > 0
+    error_message = "List of eventbridge rules is not valid."
+  }
 }
 
 ### description
 variable "name" {
-  description = "Name of metric alarm. This name must be unique within the AWS account"
+  description = "Event bus name"
   type        = string
-  default     = ""
+  default     = "default"
+  validation {
+    condition     = var.name != null && length(var.name) > 0
+    error_message = "Event bus name is not valid."
+  }
 }
 
 ### tags

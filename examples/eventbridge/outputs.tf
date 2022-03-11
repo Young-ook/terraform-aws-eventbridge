@@ -1,6 +1,9 @@
 output "event" {
-  description = "Attributes of EventBridge"
-  value       = module.event
+  description = "Attributes of EventBridge event buses"
+  value = {
+    default-bus = module.eventbus
+    custom-bus  = module.custom-eventbus
+  }
 }
 
 output "lambda" {

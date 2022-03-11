@@ -4,9 +4,13 @@ variable "bus" {
   default     = {}
 }
 
-variable "rule" {
-  description = "Event rule configuration"
-  default     = {}
+variable "rules" {
+  description = "List of Event rules configuration"
+  default     = []
+  validation {
+    condition     = var.rules != null && length(var.rules) > 0
+    error_message = "List of eventbridge rules is not valid."
+  }
 }
 
 ### description

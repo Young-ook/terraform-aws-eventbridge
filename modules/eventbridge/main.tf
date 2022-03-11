@@ -8,8 +8,10 @@ resource "aws_cloudwatch_event_bus" "bus" {
 # event rules
 # At least one of `schedule_expression` or `event_pattern` is required.
 resource "aws_cloudwatch_event_rule" "rule" {
-  name                = local.name
+  for_each            = { for e in var.rules : e.name => e }
+  name                = join("-", [local.name, each.key])
   tags                = merge(local.default-tags, var.tags)
-  schedule_expression = lookup(local.rule, "schedule_expression", local.default_rule.schedule_expression)
-  event_pattern       = lookup(local.rule, "event_pattern", local.default_rule.event_pattern)
+  description         = lookup(each.value, "description", null)
+  schedule_expression = lookup(each.value, "schedule_expression", local.default_rule.schedule_expression)
+  event_pattern       = lookup(each.value, "event_pattern", local.default_rule.event_pattern)
 }

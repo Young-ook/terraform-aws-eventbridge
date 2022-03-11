@@ -16,32 +16,27 @@ provider "aws" {
 # AWS documentation Schedule Expressions for Rules:
 # https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
 locals {
-  events = [
+  event_rules = [
     {
-      name = "scheduled_job"
-      rule_config = {
-        schedule_expression = "rate(5 minutes)"
-      }
+      name                = "scheduled_job"
+      schedule_expression = "rate(5 minutes)"
     },
     {
-      name = "pattern_event"
-      rule_config = {
-        event_pattern = file("event-pattern-example.json")
-      }
-    }
+      name          = "pattern_event"
+      event_pattern = file("event-pattern-example.json")
+    },
   ]
 }
 
 module "event" {
-  for_each = { for e in local.events : e.name => e }
-  source   = "../../modules/eventbridge"
-  name     = join("-", [var.name, each.key])
-  rule     = each.value.rule_config
+  source = "../../modules/eventbridge"
+  name   = var.name
+  rules  = local.event_rules
 }
 
 resource "aws_cloudwatch_event_target" "sfn" {
-  for_each = { for e in local.events : e.name => e }
-  rule     = module.event[each.key].rule.name
+  for_each = { for e in local.event_rules : e.name => e }
+  rule     = module.event.rules[each.key].name
   arn      = module.sfn.states.arn
   role_arn = aws_iam_role.invoke-sfn.arn
 }
@@ -138,7 +133,7 @@ module "lambda" {
 
 # cloudwatch logs
 module "logs" {
-  source     = "Young-ook/lambda/aws//modules/logs"
-  name       = var.name
-  log_config = var.log_config
+  source    = "Young-ook/lambda/aws//modules/logs"
+  name      = var.name
+  log_group = var.log_config
 }

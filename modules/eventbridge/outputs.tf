@@ -3,7 +3,7 @@ output "bus" {
   value       = aws_cloudwatch_event_bus.bus
 }
 
-output "rule" {
+output "rules" {
   description = "The attributes of generated event bridge rules"
   value       = aws_cloudwatch_event_rule.rule
 }

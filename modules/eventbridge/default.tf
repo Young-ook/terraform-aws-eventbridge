@@ -8,6 +8,5 @@ locals {
   default_bus = {
     event_source_name = null
   }
-  rule = var.rule == null ? {} : var.rule
-  bus  = var.bus == null ? {} : var.bus
+  bus = var.bus == null ? {} : var.bus
 }

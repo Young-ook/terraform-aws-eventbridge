@@ -41,7 +41,7 @@ data "aws_lambda_invocation" "invoke" {
 
 # cloudwatch logs
 module "logs" {
-  source     = "Young-ook/lambda/aws//modules/logs"
-  name       = var.name
-  log_config = var.log_config
+  source    = "Young-ook/lambda/aws//modules/logs"
+  name      = var.name
+  log_group = var.log_config
 }

@@ -59,15 +59,15 @@ resource "aws_mq_broker" "mq" {
     }
   }
 
-  /*
   dynamic "encryption_options" {
-    for_each = var.encryption_enabled ? ["true"] : []
+    for_each = lookup(var.mq, "encryption_enabled", false) ? ["enabled"] : []
     content {
-      kms_key_id        = var.kms_mq_key_arn
-      use_aws_owned_key = var.use_aws_owned_key
+      kms_key_id        = lookup(var.mq, "kms_mq_key_arn")
+      use_aws_owned_key = lookup(var.mq, "use_aws_owned_key")
     }
   }
 
+  /*
   maintenance_window_start_time {
     day_of_week = var.maintenance_day_of_week
     time_of_day = var.maintenance_time_of_day

@@ -52,8 +52,6 @@ resource "aws_lambda_function" "lambda" {
   }
 }
 
-data "aws_partition" "current" {}
-
 ### security/policy
 resource "aws_iam_role" "lambda" {
   name = format("%s-lambda", local.name)

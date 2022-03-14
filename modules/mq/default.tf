@@ -16,6 +16,8 @@ locals {
     auto_minor_version_upgrade = true
     apply_immediately          = false
     publicly_accessible        = false
+    admin_enabled              = true
+    users                      = []
     logs = [
       {
         audit_log_enabled   = false
@@ -33,6 +35,8 @@ locals {
     auto_minor_version_upgrade = true
     apply_immediately          = false
     publicly_accessible        = false
+    admin_enabled              = true
+    users                      = []
     logs = [
       {
         audit_log_enabled   = null

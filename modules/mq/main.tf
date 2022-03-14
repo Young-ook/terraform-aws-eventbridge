@@ -8,6 +8,14 @@ locals {
   vpc             = lookup(var.vpc, "vpc", local.default_vpc_config.vpc)
   subnets         = lookup(var.vpc, "subnets", local.default_vpc_config.subnets)
   security_groups = lookup(var.vpc, "security_groups", local.default_vpc_config.security_groups)
+  users           = lookup(var.mq, "users", local.default_cluster.users)
+}
+
+# security/password
+resource "random_password" "password" {
+  length           = 16
+  special          = true
+  override_special = "^"
 }
 
 ## cluster
@@ -65,20 +73,30 @@ resource "aws_mq_broker" "mq" {
     time_of_day = var.maintenance_time_of_day
     time_zone   = var.maintenance_time_zone
   }
+*/
 
   dynamic "user" {
-    for_each = local.mq_admin_user_enabled ? ["true"] : []
-    content {
-      username       = local.mq_admin_user
-      password       = local.mq_admin_password
+    for_each = { for user in(local.default_cluster.admin_enabled ? [{
+      username       = "admin"
+      password       = random_password.password.result
       groups         = ["admin"]
       console_access = true
+    }] : []) : user.username => user }
+    content {
+      username       = lookup(user.value, "username")
+      password       = lookup(user.value, "password")
+      groups         = lookup(user.value, "groups", null)
+      console_access = lookup(user.value, "console_access", false)
     }
   }
-  */
 
-  user {
-    username = "ExampleUser"
-    password = "MindTheGap123"
+  dynamic "user" {
+    for_each = { for user in local.users : user.username => user }
+    content {
+      username       = lookup(user.value, "username")
+      password       = lookup(user.value, "password")
+      groups         = lookup(user.value, "groups", null)
+      console_access = lookup(user.value, "console_access", false)
+    }
   }
 }

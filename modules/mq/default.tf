@@ -7,6 +7,11 @@ locals {
     security_groups = []
   }
   default_maintenance_window = null
+  default_admin = {
+    username       = "admin"
+    groups         = ["admin"]
+    console_access = true
+  }
   default_activemq_cluster = {
     engine_type                = "ActiveMQ"
     engine_version             = "5.16.3"

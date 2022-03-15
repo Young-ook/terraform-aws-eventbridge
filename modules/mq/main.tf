@@ -11,6 +11,19 @@ locals {
   users           = lookup(var.mq, "users", local.default_cluster.users)
 }
 
+# aws partition and region (global, gov, china)
+module "aws" {
+  source = "Young-ook/spinnaker/aws//modules/aws-partitions"
+}
+
+# security/secret
+module "vault" {
+  source  = "Young-ook/passport/aws//modules/aws-secrets"
+  version = "0.0.4"
+  name    = join("-", [local.default_admin.username, local.name])
+  secret  = random_password.password.result
+}
+
 # security/password
 resource "random_password" "password" {
   length           = 16
@@ -50,7 +63,6 @@ resource "aws_mq_broker" "mq" {
     }
   }
 
-
   dynamic "logs" {
     for_each = { for k, v in lookup(var.mq, "logs", local.default_cluster.logs) : k => v }
     content {
@@ -76,17 +88,12 @@ resource "aws_mq_broker" "mq" {
 */
 
   dynamic "user" {
-    for_each = { for user in(local.default_cluster.admin_enabled ? [{
-      username       = "admin"
-      password       = random_password.password.result
-      groups         = ["admin"]
-      console_access = true
-    }] : []) : user.username => user }
+    for_each = { for user in(local.default_cluster.admin_enabled ? [local.default_admin] : []) : user.username => user }
     content {
-      username       = lookup(user.value, "username")
-      password       = lookup(user.value, "password")
-      groups         = lookup(user.value, "groups", null)
-      console_access = lookup(user.value, "console_access", false)
+      username       = lookup(user.value, "username", local.default_admin.username)
+      password       = lookup(user.value, "password", random_password.password.result)
+      groups         = lookup(user.value, "groups", local.default_admin.groups)
+      console_access = lookup(user.value, "console_access", local.default_admin.console_access)
     }
   }
 

@@ -2,13 +2,14 @@
 
 ## parameters
 locals {
-  compatibility   = lookup(var.mq, "engine_type", "ActiveMQ")
-  default_cluster = (local.compatibility == "ActiveMQ" ? local.default_activemq_cluster : local.default_rabbitmq_cluster)
-  config          = lookup(var.mq, "properties_file", null)
-  vpc             = lookup(var.vpc, "vpc", local.default_vpc_config.vpc)
-  subnets         = lookup(var.vpc, "subnets", local.default_vpc_config.subnets)
-  security_groups = lookup(var.vpc, "security_groups", local.default_vpc_config.security_groups)
-  users           = lookup(var.mq, "users", local.default_cluster.users)
+  compatibility      = lookup(var.mq, "engine_type", "ActiveMQ")
+  default_cluster    = (local.compatibility == "ActiveMQ" ? local.default_activemq_cluster : local.default_rabbitmq_cluster)
+  config             = lookup(var.mq, "properties_file", null)
+  vpc                = lookup(var.vpc, "vpc", local.default_vpc_config.vpc)
+  subnets            = lookup(var.vpc, "subnets", local.default_vpc_config.subnets)
+  security_groups    = lookup(var.vpc, "security_groups", local.default_vpc_config.security_groups)
+  users              = lookup(var.mq, "users", local.default_cluster.users)
+  maintenance_window = lookup(var.mq, "maintenance", local.default_maintenance_window)
 }
 
 # security/password
@@ -50,7 +51,6 @@ resource "aws_mq_broker" "mq" {
     }
   }
 
-
   dynamic "logs" {
     for_each = { for k, v in lookup(var.mq, "logs", local.default_cluster.logs) : k => v }
     content {
@@ -67,13 +67,14 @@ resource "aws_mq_broker" "mq" {
     }
   }
 
-  /*
-  maintenance_window_start_time {
-    day_of_week = var.maintenance_day_of_week
-    time_of_day = var.maintenance_time_of_day
-    time_zone   = var.maintenance_time_zone
+  dynamic "maintenance_window_start_time" {
+    for_each = toset(local.maintenance_window != null ? ["custom"] : [])
+    content {
+      day_of_week = lookup(local.maintenance_window, "week")
+      time_of_day = lookup(local.maintenance_window, "day")
+      time_zone   = lookup(local.maintenance_window, "timezone")
+    }
   }
-*/
 
   dynamic "user" {
     for_each = { for user in(local.default_cluster.admin_enabled ? [{

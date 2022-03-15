@@ -6,6 +6,7 @@ locals {
     subnets         = null
     security_groups = []
   }
+  default_maintenance_window = null
   default_admin = {
     username       = "admin"
     groups         = ["admin"]

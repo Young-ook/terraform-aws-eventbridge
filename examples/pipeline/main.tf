@@ -8,11 +8,16 @@ provider "aws" {
   region = var.aws_region
 }
 
+resource "random_pet" "bucket" {
+  length    = 3
+  separator = "-"
+}
+
 # pipeline
 module "artifact" {
   source        = "Young-ook/sagemaker/aws//modules/s3"
   version       = "0.2.0"
-  name          = var.name
+  name          = random_pet.bucket.id
   tags          = var.tags
   force_destroy = true
 }

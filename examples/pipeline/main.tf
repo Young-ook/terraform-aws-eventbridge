@@ -10,7 +10,8 @@ provider "aws" {
 
 # pipeline
 module "artifact" {
-  source        = "Young-ook/spinnaker/aws//modules/s3"
+  source        = "Young-ook/sagemaker/aws//modules/s3"
+  version       = "0.2.0"
   name          = var.name
   tags          = var.tags
   force_destroy = true

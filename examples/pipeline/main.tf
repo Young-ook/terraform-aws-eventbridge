@@ -43,7 +43,9 @@ resource "aws_codestarconnections_connection" "github" {
 }
 
 module "pipeline" {
-  source      = "../../modules/pipeline"
+  depends_on  = [aws_codestarconnections_connection.github]
+  source      = "Young-ook/lambda/aws//modules/pipeline"
+  version     = "0.2.1"
   name        = var.name
   tags        = var.tags
   policy_arns = var.policy_arns
@@ -114,7 +116,7 @@ module "build" {
       image           = "aws/codebuild/standard:4.0"
       privileged_mode = true
       environment_variables = {
-        WORKDIR         = "examples/pipeline/lambda"
+        WORKDIR         = "examples/pipeline/app"
         PKG             = "lambda_handler.zip"
         ARTIFACT_BUCKET = module.artifact.bucket.id
       }
@@ -122,7 +124,7 @@ module "build" {
     source = {
       type      = "GITHUB"
       location  = "https://github.com/Young-ook/terraform-aws-lambda.git"
-      buildspec = "examples/pipeline/buildspec/build.yaml"
+      buildspec = "examples/pipeline/app/buildspec/build.yaml"
       version   = "main"
     }
     policy_arns = [module.artifact.policy_arns.write]
@@ -138,14 +140,14 @@ module "deploy" {
     environment = {
       image = "hashicorp/terraform"
       environment_variables = {
-        WORKDIR         = "examples/pipeline/lambda"
+        WORKDIR         = "examples/pipeline/app"
         ARTIFACT_BUCKET = module.artifact.bucket.id
       }
     }
     source = {
       type      = "GITHUB"
       location  = "https://github.com/Young-ook/terraform-aws-lambda.git"
-      buildspec = "examples/pipeline/buildspec/deploy.yaml"
+      buildspec = "examples/pipeline/app/buildspec/deploy.yaml"
       version   = "main"
     }
     policy_arns = ["arn:aws:iam::aws:policy/AdministratorAccess"]

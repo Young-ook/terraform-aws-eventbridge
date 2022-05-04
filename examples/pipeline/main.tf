@@ -43,12 +43,11 @@ resource "aws_codestarconnections_connection" "github" {
 }
 
 module "pipeline" {
-  depends_on  = [aws_codestarconnections_connection.github]
   source      = "Young-ook/lambda/aws//modules/pipeline"
   version     = "0.2.1"
   name        = var.name
   tags        = var.tags
-  policy_arns = var.policy_arns
+  policy_arns = [aws_iam_policy.github.arn]
   stage_config = [
     {
       name = "Source"

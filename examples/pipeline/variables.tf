@@ -32,13 +32,6 @@ variable "log_config" {
   default     = {}
 }
 
-### security
-variable "policy_arns" {
-  description = "Policy ARN list to attach to the code pipeline"
-  type        = list(string)
-  default     = []
-}
-
 ### description
 variable "name" {
   description = "The logical name of the module instance"

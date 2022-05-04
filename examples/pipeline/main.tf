@@ -43,11 +43,18 @@ resource "aws_codestarconnections_connection" "github" {
 }
 
 module "pipeline" {
-  source      = "Young-ook/lambda/aws//modules/pipeline"
-  version     = "0.2.1"
-  name        = var.name
-  tags        = var.tags
-  policy_arns = [aws_iam_policy.github.arn]
+  source  = "Young-ook/lambda/aws//modules/pipeline"
+  version = "0.2.1"
+  name    = var.name
+  tags    = var.tags
+  policy_arns = [
+    aws_iam_policy.github.arn,
+    module.artifact.policy_arns.write,
+  ]
+  artifact_config = [{
+    location = module.artifact.bucket.id
+    type     = "S3"
+  }]
   stage_config = [
     {
       name = "Source"
@@ -99,17 +106,14 @@ module "pipeline" {
       }]
     },
   ]
-  artifact_config = [{
-    location = module.artifact.bucket.id
-    type     = "S3"
-  }]
 }
 
 module "build" {
-  source  = "Young-ook/spinnaker/aws//modules/codebuild"
-  version = "2.3.1"
-  name    = var.name
-  tags    = var.tags
+  source      = "Young-ook/spinnaker/aws//modules/codebuild"
+  version     = "2.3.1"
+  name        = var.name
+  tags        = var.tags
+  policy_arns = [module.artifact.policy_arns.write]
   project = {
     environment = {
       image           = "aws/codebuild/standard:4.0"
@@ -126,15 +130,15 @@ module "build" {
       buildspec = "examples/pipeline/app/buildspec/build.yaml"
       version   = "main"
     }
-    policy_arns = [module.artifact.policy_arns.write]
   }
 }
 
 module "deploy" {
-  source  = "Young-ook/spinnaker/aws//modules/codebuild"
-  version = "2.3.1"
-  name    = var.name
-  tags    = var.tags
+  source      = "Young-ook/spinnaker/aws//modules/codebuild"
+  version     = "2.3.1"
+  name        = var.name
+  tags        = var.tags
+  policy_arns = ["arn:aws:iam::aws:policy/AdministratorAccess"]
   project = {
     environment = {
       image = "hashicorp/terraform"
@@ -149,7 +153,6 @@ module "deploy" {
       buildspec = "examples/pipeline/app/buildspec/deploy.yaml"
       version   = "main"
     }
-    policy_arns = ["arn:aws:iam::aws:policy/AdministratorAccess"]
   }
 }
 

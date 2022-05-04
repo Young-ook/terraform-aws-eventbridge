@@ -8,10 +8,16 @@ provider "aws" {
   region = var.aws_region
 }
 
+resource "random_pet" "bucket" {
+  length    = 3
+  separator = "-"
+}
+
 # pipeline
 module "artifact" {
-  source        = "Young-ook/spinnaker/aws//modules/s3"
-  name          = var.name
+  source        = "Young-ook/sagemaker/aws//modules/s3"
+  version       = "0.2.0"
+  name          = random_pet.bucket.id
   tags          = var.tags
   force_destroy = true
 }
@@ -37,10 +43,18 @@ resource "aws_codestarconnections_connection" "github" {
 }
 
 module "pipeline" {
-  source      = "../../modules/pipeline"
-  name        = var.name
-  tags        = var.tags
-  policy_arns = var.policy_arns
+  source  = "Young-ook/lambda/aws//modules/pipeline"
+  version = "0.2.1"
+  name    = var.name
+  tags    = var.tags
+  policy_arns = [
+    aws_iam_policy.github.arn,
+    module.artifact.policy_arns.write,
+  ]
+  artifact_config = [{
+    location = module.artifact.bucket.id
+    type     = "S3"
+  }]
   stage_config = [
     {
       name = "Source"
@@ -92,61 +106,60 @@ module "pipeline" {
       }]
     },
   ]
-  artifact_config = [{
-    location = module.artifact.bucket.id
-    type     = "S3"
-  }]
 }
 
 module "build" {
-  source = "Young-ook/spinnaker/aws//modules/codebuild"
-  name   = var.name
-  tags   = var.tags
-  environment_config = {
-    image           = "aws/codebuild/standard:4.0"
-    privileged_mode = true
-    environment_variables = {
-      WORKDIR         = "examples/pipeline/lambda"
-      PKG             = "lambda_handler.zip"
-      ARTIFACT_BUCKET = module.artifact.bucket.id
+  source      = "Young-ook/spinnaker/aws//modules/codebuild"
+  version     = "2.3.1"
+  name        = var.name
+  tags        = var.tags
+  policy_arns = [module.artifact.policy_arns.write]
+  project = {
+    environment = {
+      image           = "aws/codebuild/standard:4.0"
+      privileged_mode = true
+      environment_variables = {
+        WORKDIR         = "examples/pipeline/app"
+        PKG             = "lambda_handler.zip"
+        ARTIFACT_BUCKET = module.artifact.bucket.id
+      }
+    }
+    source = {
+      type      = "GITHUB"
+      location  = "https://github.com/Young-ook/terraform-aws-lambda.git"
+      buildspec = "examples/pipeline/app/buildspec/build.yaml"
+      version   = "main"
     }
   }
-  source_config = {
-    type      = "GITHUB"
-    location  = "https://github.com/Young-ook/terraform-aws-lambda.git"
-    buildspec = "examples/pipeline/buildspec/build.yaml"
-    version   = "main"
-  }
-  policy_arns = [
-    module.artifact.policy_arns["write"],
-  ]
 }
 
 module "deploy" {
-  source = "Young-ook/spinnaker/aws//modules/codebuild"
-  name   = var.name
-  tags   = var.tags
-  environment_config = {
-    image = "hashicorp/terraform"
-    environment_variables = {
-      WORKDIR         = "examples/pipeline/lambda"
-      ARTIFACT_BUCKET = module.artifact.bucket.id
+  source      = "Young-ook/spinnaker/aws//modules/codebuild"
+  version     = "2.3.1"
+  name        = var.name
+  tags        = var.tags
+  policy_arns = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+  project = {
+    environment = {
+      image = "hashicorp/terraform"
+      environment_variables = {
+        WORKDIR         = "examples/pipeline/app"
+        ARTIFACT_BUCKET = module.artifact.bucket.id
+      }
+    }
+    source = {
+      type      = "GITHUB"
+      location  = "https://github.com/Young-ook/terraform-aws-lambda.git"
+      buildspec = "examples/pipeline/app/buildspec/deploy.yaml"
+      version   = "main"
     }
   }
-  source_config = {
-    type      = "GITHUB"
-    location  = "https://github.com/Young-ook/terraform-aws-lambda.git"
-    buildspec = "examples/pipeline/buildspec/deploy.yaml"
-    version   = "main"
-  }
-  policy_arns = [
-    "arn:aws:iam::aws:policy/AdministratorAccess",
-  ]
 }
 
 # cloudwatch logs
 module "logs" {
-  source     = "Young-ook/lambda/aws//modules/logs"
-  name       = var.name
-  log_config = var.log_config
+  source    = "Young-ook/lambda/aws//modules/logs"
+  version   = "0.2.1"
+  name      = var.name
+  log_group = var.log_config
 }

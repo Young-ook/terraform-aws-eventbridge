@@ -1,10 +1,13 @@
-resource "random_pet" "name" {
-  length    = 3
-  separator = "-"
+### frigga name
+module "frigga" {
+  source  = "Young-ook/spinnaker/aws//modules/frigga"
+  version = "2.3.3"
+  name    = var.name == null || var.name == "" ? "lambda" : var.name
+  petname = var.name == null || var.name == "" ? true : false
 }
 
 locals {
-  name = var.name == null || var.name == "" ? random_pet.name.id : var.name
+  name = module.frigga.name
   default-tags = merge(
     { "terraform.io" = "managed" },
     { "Name" = local.name },

@@ -90,8 +90,9 @@ resource "aws_iam_policy" "ddb-access" {
 module "logs" {
   source  = "Young-ook/lambda/aws//modules/logs"
   version = "0.2.1"
-  name    = var.name
+  name    = module.lambda.function.function_name
   log_group = {
+    namespace      = "/aws/lambda"
     retension_days = 5
   }
 }

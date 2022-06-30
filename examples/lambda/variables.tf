@@ -9,7 +9,6 @@ variable "aws_region" {
 
 variable "vpc_config" {
   description = "VPC configuration for function"
-  type        = map(any)
   default     = {}
 }
 
@@ -22,14 +21,12 @@ variable "lambda_config" {
 ### log
 variable "log_config" {
   description = "Log configuration for function"
-  type        = map(any)
   default     = {}
 }
 
 ### tracing
 variable "tracing_config" {
   description = "AWS X-ray tracing configuration for function"
-  type        = map(any)
   default     = {}
 }
 

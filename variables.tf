@@ -1,27 +1,35 @@
 ### computing/function
 variable "lambda" {
   description = "Lambda function configuration"
+  type        = any
   default     = {}
 }
 
 ### computing/layer
 variable "layer" {
   description = "Lambda layer configuration"
-  type        = map(any)
+  type        = any
   default     = {}
 }
 
 ### network
 variable "vpc" {
   description = "VPC configuration for function"
-  type        = map(any)
+  type        = any
   default     = {}
 }
 
-### tracing
+### observability/tracing
 variable "tracing" {
-  description = "AWS X-ray tracing configuration for function"
-  type        = map(any)
+  description = "Tracing configuration for function"
+  type        = any
+  default     = {}
+}
+
+### observability/logs
+variable "logs" {
+  description = "Log configuration for function"
+  type        = any
   default     = {}
 }
 

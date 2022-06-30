@@ -3,9 +3,9 @@ output "lambda" {
   value       = module.lambda.function
 }
 
-output "log" {
+output "logs" {
   description = "Attributes of cloudwatch log group for the lmabda function"
-  value       = module.logs
+  value       = module.lambda.logs
 }
 
 output "result" {

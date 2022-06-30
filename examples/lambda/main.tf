@@ -18,14 +18,14 @@ data "archive_file" "lambda_zip_file" {
 
 # lambda
 module "lambda" {
-  depends_on  = [data.archive_file.lambda_zip_file]
-  source      = "Young-ook/lambda/aws"
-  name        = var.name
-  tags        = var.tags
-  lambda      = var.lambda_config
-  tracing     = var.tracing_config
-  vpc         = var.vpc_config
-  policy_arns = [module.logs.policy_arns["write"]]
+  depends_on = [data.archive_file.lambda_zip_file]
+  source     = "Young-ook/lambda/aws"
+  name       = var.name
+  tags       = var.tags
+  lambda     = var.lambda_config
+  logs       = var.log_config
+  tracing    = var.tracing_config
+  vpc        = var.vpc_config
 }
 
 # lambda invokation for test
@@ -37,11 +37,4 @@ data "aws_lambda_invocation" "invoke" {
     key2 = "value2"
     key3 = "value3"
   })
-}
-
-# cloudwatch logs
-module "logs" {
-  source    = "Young-ook/lambda/aws//modules/logs"
-  name      = var.name
-  log_group = var.log_config
 }

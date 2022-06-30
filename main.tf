@@ -82,8 +82,24 @@ resource "aws_iam_role_policy_attachment" "tracing" {
   policy_arn = "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "logs" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = module.logs.policy_arns["write"]
+}
+
 resource "aws_iam_role_policy_attachment" "extra" {
   for_each   = { for key, val in var.policy_arns : key => val }
   role       = aws_iam_role.lambda.name
   policy_arn = each.value
+}
+
+### observability/logs
+module "logs" {
+  source  = "Young-ook/lambda/aws//modules/logs"
+  version = "0.2.2"
+  name    = var.name
+  log_group = {
+    namespace         = lookup(var.logs, "namespace", "/aws/lambda")
+    retention_in_days = lookup(var.logs, "retension_days", 7)
+  }
 }

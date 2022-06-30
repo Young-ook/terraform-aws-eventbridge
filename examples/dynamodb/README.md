@@ -1,4 +1,5 @@
 # Amazon DynamoDB
+This lambda and dynamodb example is based on [Using Lambda with API Gateway](https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway-tutorial.html) tutorial. For more details, please refer to the original guide.
 
 ## Download example
 Download this example on your workspace

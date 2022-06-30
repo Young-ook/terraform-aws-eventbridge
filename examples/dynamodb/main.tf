@@ -42,7 +42,7 @@ data "archive_file" "lambda_zip_file" {
 module "lambda" {
   depends_on = [data.archive_file.lambda_zip_file]
   source     = "Young-ook/lambda/aws"
-  version    = "0.2.1"
+  version    = "0.2.2"
   name       = var.name
   tags       = var.tags
   lambda = {

@@ -42,7 +42,7 @@ data "archive_file" "lambda_zip_file" {
 module "lambda" {
   depends_on = [data.archive_file.lambda_zip_file]
   source     = "Young-ook/lambda/aws"
-  version    = "0.2.2"
+  version    = "0.2.3"
   name       = var.name
   tags       = var.tags
   lambda = {
@@ -73,26 +73,6 @@ resource "aws_iam_policy" "ddb-access" {
         Effect   = "Allow"
         Resource = "*"
       },
-      {
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
     ]
   })
-}
-
-# cloudwatch
-module "logs" {
-  source  = "Young-ook/lambda/aws//modules/logs"
-  version = "0.2.1"
-  name    = module.lambda.function.function_name
-  log_group = {
-    namespace      = "/aws/lambda"
-    retension_days = 5
-  }
 }

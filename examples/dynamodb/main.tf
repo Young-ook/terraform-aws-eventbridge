@@ -15,9 +15,10 @@ provider "aws" {
 
 # dynamodb
 module "ddb" {
-  source = "../../modules/dynamodb"
-  name   = "lambda-apigateway"
-  tags   = var.tags
+  source       = "../../modules/dynamodb"
+  name         = "lambda-apigateway"
+  tags         = var.tags
+  billing_mode = lookup(var.dynamodb_config, "billing_mode")
 
   attributes = [
     {

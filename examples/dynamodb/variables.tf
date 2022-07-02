@@ -13,7 +13,7 @@ variable "vpc_config" {
 }
 
 ### dynamodb
-variable "ddb_config" {
+variable "dynamodb_config" {
   description = "DynamoDB table configuration"
   default     = {}
 }

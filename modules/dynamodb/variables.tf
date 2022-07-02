@@ -32,16 +32,16 @@ variable "billing_mode" {
   }
 }
 
-variable "scaling_config" {
+variable "scaling" {
   description = "DynamoDB autoscaling configuration"
   type        = map(any)
   default = {
     min_read_capacity  = 5
+    max_read_capacity  = 10
+    target_read        = 70
     min_write_capacity = 5
-    max_read_capacity  = 100
-    max_write_capacity = 100
-    read_target        = 70
-    write_target       = 70
+    max_write_capacity = 10
+    target_write       = 70
   }
 }
 

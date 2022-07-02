@@ -1,13 +1,14 @@
 # dynamodb table
 
+### database/table
 resource "aws_dynamodb_table" "db" {
   name           = var.name
   tags           = merge(local.default-tags, var.tags)
   billing_mode   = var.billing_mode
   hash_key       = lookup(var.key_schema, "hash_key")
   range_key      = lookup(var.key_schema, "range_key", null)
-  read_capacity  = var.billing_mode == "PROVISIONED" ? lookup(var.scaling_config, "min_read_capacity") : null
-  write_capacity = var.billing_mode == "PROVISIONED" ? lookup(var.scaling_config, "min_write_capacity") : null
+  read_capacity  = var.billing_mode == "PROVISIONED" ? lookup(var.scaling, "max_read_capacity", 10) : null
+  write_capacity = var.billing_mode == "PROVISIONED" ? lookup(var.scaling, "max_write_capacity", 10) : null
 
   dynamic "attribute" {
     for_each = var.attributes
@@ -56,5 +57,38 @@ resource "aws_dynamodb_table" "db" {
 
   lifecycle {
     ignore_changes = [read_capacity, write_capacity]
+  }
+}
+
+### autoscaling/policy
+module "rcu_scaling" {
+  for_each = toset(var.billing_mode == "PROVISIONED" ? ["enabled"] : [])
+  source   = "./modules/autoscaling"
+  name     = join("-", [local.name, "dynamodb-rcu"])
+  scaling_policy = {
+    max_capacity           = lookup(var.scaling, "max_read_capacity", 10)
+    min_capacity           = lookup(var.scaling, "min_read_capacity", 5)
+    resource_id            = join("/", ["table", aws_dynamodb_table.db.id])
+    scalable_dimension     = "dynamodb:table:ReadCapacityUnits"
+    service_namespace      = "dynamodb"
+    policy_type            = "TargetTrackingScaling"
+    predefined_metric_type = "DynamoDBReadCapacityUtilization"
+    target_value           = lookup(var.scaling, "read_target", 70)
+  }
+}
+
+module "wcu_scaling" {
+  for_each = toset(var.billing_mode == "PROVISIONED" ? ["enabled"] : [])
+  source   = "./modules/autoscaling"
+  name     = join("-", [local.name, "dynamodb-wcu"])
+  scaling_policy = {
+    max_capacity           = lookup(var.scaling, "max_write_capacity", 10)
+    min_capacity           = lookup(var.scaling, "min_write_capacity", 5)
+    resource_id            = join("/", ["table", aws_dynamodb_table.db.id])
+    scalable_dimension     = "dynamodb:table:WriteCapacityUnits"
+    service_namespace      = "dynamodb"
+    policy_type            = "TargetTrackingScaling"
+    predefined_metric_type = "DynamoDBWriteCapacityUtilization"
+    target_value           = lookup(var.scaling, "write_target", 70)
   }
 }

@@ -1,16 +1,26 @@
-data "aws_region" "current" {}
+### default values
+
+module "aws" {
+  source = "Young-ook/spinnaker/aws//modules/aws-partitions"
+}
 
 locals {
   default_lambda_config = {
-    package                 = "lambda_handler.zip"
+    package                 = null
     handler                 = "lambda_handler"
     runtime                 = "python3.8"
     memory                  = 128
     timeout                 = 3
     publish                 = false
-    region                  = data.aws_region.current.name
+    layers                  = []
+    region                  = module.aws.region.name
     provisioned_concurrency = -1
     environment_variables   = {}
+  }
+  default_bucket_config = {
+    s3_bucket         = null
+    s3_key            = null
+    s3_object_version = null
   }
   default_vpc_config = {}
   default_log_config = {

@@ -1,20 +1,15 @@
-### computing/function
-variable "lambda" {
-  description = "Lambda function configuration"
-  type        = any
-  default     = {}
-}
-
-### computing/layer
-variable "layer" {
-  description = "Lambda layer configuration"
-  type        = any
-  default     = {}
-}
+### input variables
 
 ### network
 variable "vpc" {
   description = "VPC configuration for function"
+  type        = any
+  default     = {}
+}
+
+### computing/function
+variable "lambda" {
+  description = "Lambda function configuration"
   type        = any
   default     = {}
 }

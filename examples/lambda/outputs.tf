@@ -3,6 +3,11 @@ output "lambda" {
   value       = module.lambda.function
 }
 
+output "layer" {
+  description = "Attributes of lmabda layer"
+  value       = module.layer.layer
+}
+
 output "logs" {
   description = "Attributes of cloudwatch log group for the lmabda function"
   value       = module.lambda.logs

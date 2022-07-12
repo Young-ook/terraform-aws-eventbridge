@@ -6,6 +6,13 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
+
+  # Make it faster by skipping something
+  skip_get_ec2_platforms      = true
+  skip_metadata_api_check     = true
+  skip_region_validation      = true
+  skip_credentials_validation = true
+  skip_requesting_account_id  = true
 }
 
 # zip arhive
@@ -18,14 +25,27 @@ data "archive_file" "lambda_zip_file" {
 
 # lambda
 module "lambda" {
-  depends_on = [data.archive_file.lambda_zip_file]
+  depends_on = [data.archive_file.lambda_zip_file, module.layer]
   source     = "Young-ook/lambda/aws"
   name       = var.name
   tags       = var.tags
-  lambda     = var.lambda_config
-  logs       = var.log_config
-  tracing    = var.tracing_config
-  vpc        = var.vpc_config
+  lambda = merge(
+    { layers = [module.layer.layer.arn] },
+    var.lambda_config
+  )
+  logs    = var.log_config
+  tracing = var.tracing_config
+  vpc     = var.vpc_config
+}
+
+# lambda layer
+module "layer" {
+  source = "../../modules/layer"
+  name   = var.name
+  tags   = var.tags
+  layer = {
+    package = "lambda_handler.zip"
+  }
 }
 
 # lambda invokation for test

@@ -1,21 +1,19 @@
 ### serverless aws lambda
 
-module "aws" {
-  source = "Young-ook/spinnaker/aws//modules/aws-partitions"
-}
-
+### computing/function
 resource "aws_lambda_function" "lambda" {
   function_name                  = local.name
-  filename                       = lookup(var.lambda, "package", null)
-  s3_bucket                      = lookup(var.lambda, "s3_bucket", null)
-  s3_key                         = lookup(var.lambda, "s3_key", null)
-  s3_object_version              = lookup(var.lambda, "s3_object_version", null)
+  filename                       = lookup(var.lambda, "package", local.default_lambda_config["package"])
+  s3_bucket                      = lookup(var.lambda, "s3_bucket", local.default_bucket_config["s3_bucket"])
+  s3_key                         = lookup(var.lambda, "s3_key", local.default_bucket_config["s3_key"])
+  s3_object_version              = lookup(var.lambda, "s3_object_version", local.default_bucket_config["s3_object_version"])
   handler                        = lookup(var.lambda, "handler", local.default_lambda_config["handler"])
   runtime                        = lookup(var.lambda, "runtime", local.default_lambda_config["runtime"])
   memory_size                    = lookup(var.lambda, "memory", local.default_lambda_config["memory"])
   timeout                        = lookup(var.lambda, "timeout", local.default_lambda_config["timeout"])
   reserved_concurrent_executions = lookup(var.lambda, "provisioned_concurrency", local.default_lambda_config["provisioned_concurrency"])
   publish                        = lookup(var.lambda, "publish", local.default_lambda_config["publish"])
+  layers                         = lookup(var.lambda, "layers", local.default_lambda_config["layers"])
   role                           = aws_iam_role.lambda.arn
   tags                           = merge(local.default-tags, var.tags)
 

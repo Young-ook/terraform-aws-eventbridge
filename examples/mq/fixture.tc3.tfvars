@@ -1,5 +1,5 @@
 aws_region = "ap-northeast-2"
-name       = "lambda-eda-tc3-rabbitmq"
+name       = "lambda-eda-rabbitmq-custom-config"
 tags = {
   env    = "dev"
   test   = "tc3"

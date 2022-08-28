@@ -14,6 +14,7 @@ variable "mq" {
 variable "name" {
   description = "Name of message queue"
   type        = string
+  default     = null
 }
 
 ### tags

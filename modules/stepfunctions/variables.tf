@@ -23,7 +23,7 @@ variable "tracing_config" {
 variable "name" {
   description = "Name of metric alarm. This name must be unique within the AWS account"
   type        = string
-  default     = ""
+  default     = null
 }
 
 ### tags

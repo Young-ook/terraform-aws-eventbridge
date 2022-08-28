@@ -15,7 +15,7 @@ variable "log_metric_filters" {
 variable "name" {
   description = "Name of container image repository"
   type        = string
-  default     = ""
+  default     = null
 }
 
 ### tags

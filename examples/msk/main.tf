@@ -5,7 +5,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "< 4.0"
+      version = ">= 4.0"
     }
   }
 }
@@ -16,17 +16,17 @@ provider "aws" {
 
 # default vpc
 module "vpc" {
-  source  = "Young-ook/sagemaker/aws//modules/vpc"
-  version = "> 0.0.6"
+  source  = "Young-ook/vpc/aws"
+  version = "1.0.1"
   name    = var.name
   tags    = var.tags
 }
 
 # logs
 module "cwlogs" {
-  source     = "Young-ook/lambda/aws//modules/logs"
-  name       = var.name
-  log_config = var.log_config
+  source    = "Young-ook/lambda/aws//modules/logs"
+  name      = var.name
+  log_group = var.log_config
 }
 
 module "logbucket" {

@@ -20,7 +20,7 @@ module "logs" {
 module "alarm" {
   source      = "Young-ook/lambda/aws//modules/alarm"
   version     = "> 0.1.1"
-  name        = join("-", [var.name, module.logs.log_metric_filters.0.name])
+  name        = join("-", [module.logs.log_group.name, module.logs.log_metric_filters.0.name])
   description = "Log errors are too high"
 
   alarm_metric = {

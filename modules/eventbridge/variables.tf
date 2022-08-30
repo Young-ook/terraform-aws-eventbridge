@@ -21,11 +21,7 @@ variable "rules" {
 variable "name" {
   description = "Event bus name"
   type        = string
-  default     = "default"
-  validation {
-    condition     = var.name != null && length(var.name) > 0
-    error_message = "Event bus name is not valid."
-  }
+  default     = null
 }
 
 ### tags

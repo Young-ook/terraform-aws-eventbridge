@@ -13,6 +13,11 @@ resource "random_pet" "bucket" {
   separator = "-"
 }
 
+resource "random_pet" "github" {
+  length    = 3
+  separator = "-"
+}
+
 # pipeline
 module "artifact" {
   source        = "Young-ook/sagemaker/aws//modules/s3"
@@ -23,7 +28,7 @@ module "artifact" {
 }
 
 resource "aws_iam_policy" "github" {
-  name        = join("-", [var.name, "gh-conn"])
+  name        = random_pet.github.id
   description = "Allows to run code build"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -38,7 +43,7 @@ resource "aws_iam_policy" "github" {
 }
 
 resource "aws_codestarconnections_connection" "github" {
-  name          = join("-", [var.name, "gh-conn"])
+  name          = random_pet.github.id
   provider_type = "GitHub"
 }
 

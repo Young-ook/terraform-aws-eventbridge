@@ -1,44 +1,27 @@
-### input variables
-
-### network
-variable "vpc" {
-  description = "VPC configuration for function"
-  type        = any
+### event bridge
+variable "bus" {
+  description = "Event bus configuration"
   default     = {}
+  validation {
+    condition     = var.bus != null
+    error_message = "Configuration for custom eventbridge bus must not be null."
+  }
 }
 
-### computing/function
-variable "lambda" {
-  description = "Lambda function configuration"
-  type        = any
-  default     = {}
-}
-
-### observability/tracing
-variable "tracing" {
-  description = "Tracing configuration for function"
-  type        = any
-  default     = {}
-}
-
-### observability/logs
-variable "logs" {
-  description = "Log configuration for function"
-  type        = any
-  default     = {}
-}
-
-### security
-variable "policy_arns" {
-  description = "A list of policy ARNs to attach the role for lambda function"
-  type        = list(string)
+variable "rules" {
+  description = "List of event rules configuration"
   default     = []
+  validation {
+    condition     = var.rules != null && length(var.rules) > 0
+    error_message = "List of eventbridge rules is not valid."
+  }
 }
 
 ### description
 variable "name" {
-  description = "The logical name of the module instance"
+  description = "Event bus name"
   type        = string
+  default     = null
 }
 
 ### tags

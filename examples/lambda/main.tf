@@ -40,7 +40,7 @@ module "lambda" {
 
 # lambda layer
 module "layer" {
-  source = "../../modules/layer"
+  source = "../../modules/lambda/modules/layer"
   name   = var.name
   tags   = var.tags
   layer = {

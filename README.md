@@ -36,3 +36,7 @@ tfenv list
 tfenv install latest
 tfenv use <version>
 ```
+
+# Additional Resources
+- [Building an event-driven application with Amazon EventBridge](https://aws.amazon.com/blogs/compute/building-an-event-driven-application-with-amazon-eventbridge/)
+- [https://aws.amazon.com/blogs/architecture/use-aws-step-functions-to-monitor-services-choreography/](https://aws.amazon.com/blogs/architecture/use-aws-step-functions-to-monitor-services-choreography/)

@@ -1,7 +1,7 @@
 output "event" {
   description = "Attributes of EventBridge event buses"
   value = {
-    default-bus = module.eventbus
+    default-bus = module.default-eventbus
     custom-bus  = module.custom-eventbus
   }
 }
@@ -9,11 +9,6 @@ output "event" {
 output "lambda" {
   description = "Attributes of lmabda function"
   value       = module.lambda.function
-}
-
-output "log" {
-  description = "Attributes of cloudwatch log group for the lmabda function"
-  value       = module.logs
 }
 
 output "sfn" {

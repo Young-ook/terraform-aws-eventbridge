@@ -26,7 +26,7 @@ data "archive_file" "lambda_zip_file" {
 # lambda
 module "lambda" {
   depends_on = [data.archive_file.lambda_zip_file, module.layer]
-  source     = "Young-ook/lambda/aws"
+  source     = "../../modules/lambda"
   name       = var.name
   tags       = var.tags
   lambda = merge(

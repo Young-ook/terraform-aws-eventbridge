@@ -1,5 +1,5 @@
-# AWS Lambda
-[AWS Lambda](https://aws.amazon.com/lambda/) is a serverless compute service that lets you run code without provisioning or managing servers, creating workload-aware cluster scaling logic, maintaining event integrations, or managing runtimes. With Lambda, you can run code for virtually any type of application or backend service - all with zero administration.
+# Amazon EventBridge
+[Amazon EventBridge](https://aws.amazon.com/eventbridge) is a serverless event bus that makes it easier to build event-driven applications at scale using events generated from your applications, integrated Software-as-a-Service (SaaS) applications, and AWS services. EventBridge delivers a stream of real-time data from event sources such as Zendesk or Shopify to targets like AWS Lambda and other SaaS applications. You can set up routing rules to determine where to send your data to build application architectures that react in real-time to your data sources with event publisher and consumer completely decoupled.
 
 ## Examples
 - [Event-Driven Computing with Amazon EventBridge and AWS Lambda](https://github.com/Young-ook/terraform-aws-lambda/blob/main/examples/eventbridge)
@@ -36,3 +36,7 @@ tfenv list
 tfenv install latest
 tfenv use <version>
 ```
+
+# Additional Resources
+- [Building an event-driven application with Amazon EventBridge](https://aws.amazon.com/blogs/compute/building-an-event-driven-application-with-amazon-eventbridge/)
+- [https://aws.amazon.com/blogs/architecture/use-aws-step-functions-to-monitor-services-choreography/](https://aws.amazon.com/blogs/architecture/use-aws-step-functions-to-monitor-services-choreography/)

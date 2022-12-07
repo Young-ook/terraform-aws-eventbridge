@@ -93,8 +93,8 @@ resource "aws_iam_role_policy_attachment" "extra" {
 
 ### observability/logs
 module "logs" {
-  source  = "Young-ook/lambda/aws//modules/logs"
-  version = "0.2.2"
+  source  = "Young-ook/eventbridge/aws//modules/logs"
+  version = "0.0.6"
   name    = local.name
   log_group = {
     namespace         = lookup(var.logs, "namespace", "/aws/lambda")

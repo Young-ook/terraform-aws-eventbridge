@@ -1,7 +1,9 @@
 [[English](README.md)] [[한국어](README.ko.md)]
 
 # EDA (Event-Driven Architecture) Blueprint
-This is EDA Blueprint example helps you compose complete AWS serverless resources that are fully bootstrapped with the operational software that is needed to deploy and operate asynchronous event-driven workloads. With this EDA Blueprint example, you describe the configuration for the desired state of your EDA environment, such as the control plane, event bus, task runners, and observability tools, as an Infrastructure as Code (IaC) template/blueprint. Once a blueprint is configured, you can use it to stamp out consistent environments across multiple AWS accounts and Regions using your automation workflow tool, such as Jenkins, CodePipeline. Also, you can use EDA Blueprint to easily bootstrap an EDA application with a wide range of popular open-source tools additionally. EDA Blueprints, composed of AWS managed services, can also help you enforce the relevant security controls you need.
+Event-driven architecture is common in modern applications built with microservices, and it is the cornerstone for designing serverless workloads. It uses events to trigger and communicate between decoupled services. This is EDA Blueprint example helps you compose complete AWS serverless resources that are fully bootstrapped with the operational software that is needed to deploy and operate asynchronous event-driven workloads. With this EDA Blueprint example, you describe the configuration for the desired state of your EDA environment, such as the control plane, event bus, task runners, and observability tools, as an Infrastructure as Code (IaC) template/blueprint. Once a blueprint is configured, you can use it to stamp out consistent environments across multiple AWS accounts and Regions using your automation workflow tool, such as Jenkins, CodePipeline. Also, you can use EDA Blueprint to easily bootstrap an EDA application with a wide range of popular open-source tools additionally. EDA Blueprints, composed of AWS managed services, can also help you enforce the relevant security controls you need.
+
+![aws-event-driven-architecture](../../images/aws-event-driven-architecture.png)
 
 ## Setup
 ## Download
@@ -23,6 +25,10 @@ Also you can use the `-var-file` option for customized paramters when you run th
 terraform plan -var-file fixture.tc1.tfvars
 terraform apply -var-file fixture.tc1.tfvars
 ```
+
+## Orchestration
+## Choreography
+![aws-event-driven-architecture-better-together](../../images/aws-event-driven-architecture-better-together.png)
 
 ## Clean up
 To destroy all infrastrcuture, run terraform:

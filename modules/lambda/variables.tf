@@ -12,6 +12,10 @@ variable "lambda" {
   description = "Lambda function configuration"
   type        = any
   default     = {}
+  validation {
+    condition     = var.lambda != null
+    error_message = "Lambda function configuration must not be null."
+  }
 }
 
 ### observability/tracing

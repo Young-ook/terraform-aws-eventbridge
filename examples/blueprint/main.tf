@@ -1,4 +1,4 @@
-# AWS Lambda for event-driven architecture example
+# Event-Driven Architecture on AWS
 
 terraform {
   required_version = "~> 1.0"
@@ -28,19 +28,20 @@ locals {
   ]
 }
 
-# default event bus
-module "eventbus" {
-  source = "../../modules/eventbridge"
+### choreography/eventbus
+module "default-eventbus" {
+  source = "../../"
+  name   = "default"
   rules  = local.event_rules
 }
 
-# custom event bus
 module "custom-eventbus" {
-  source = "../../modules/eventbridge"
-  name   = var.name
+  source = "../../"
+  name   = "custom-eventbus"
   rules  = [element(local.event_rules, 1)]
 }
 
+### choreography/route
 resource "aws_cloudwatch_event_target" "sfn" {
   for_each = { for e in local.event_rules : e.name => e }
   rule     = module.eventbus.rules[each.key].name
@@ -52,8 +53,9 @@ module "aws" {
   source = "Young-ook/spinnaker/aws//modules/aws-partitions"
 }
 
+### security/policy
 resource "aws_iam_role" "invoke-sfn" {
-  name = join("-", [var.name, "invoke-sfn"])
+  name = join("-", [var.name == null ? "" : var.name, "invoke-sfn"])
   tags = var.tags
   assume_role_policy = jsonencode({
     Statement = [{
@@ -67,7 +69,7 @@ resource "aws_iam_role" "invoke-sfn" {
   })
 
   inline_policy {
-    name = join("-", [var.name, "invoke-sfn"])
+    name = join("-", [var.name == null ? "" : var.name, "invoke-sfn"])
     policy = jsonencode({
       Version = "2012-10-17",
       Statement = [{
@@ -79,7 +81,7 @@ resource "aws_iam_role" "invoke-sfn" {
   }
 }
 
-# step functions
+### orchestration/flow
 module "sfn" {
   source      = "../../modules/stepfunctions"
   name        = var.name
@@ -103,7 +105,7 @@ EOF
 }
 
 resource "aws_iam_policy" "invoke-lambda" {
-  name = join("-", [var.name, "invoke-lambda"])
+  name = join("-", [var.name == null ? "" : var.name, "invoke-lambda"])
   tags = var.tags
   policy = jsonencode({
     Version = "2012-10-17",
@@ -115,20 +117,19 @@ resource "aws_iam_policy" "invoke-lambda" {
   })
 }
 
-# zip arhive
+### application/package
 data "archive_file" "lambda_zip_file" {
   output_path = join("/", [path.module, "lambda_handler.zip"])
-  source_dir  = join("/", [path.module, "app"])
+  source_dir  = join("/", [path.module, "apps/running"])
   excludes    = ["__init__.py", "*.pyc"]
   type        = "zip"
 }
 
-# lambda
+### application/function
 module "lambda" {
-  source  = "Young-ook/lambda/aws"
-  version = "> 0.1"
-  name    = var.name
-  tags    = var.tags
+  source = "../../modules/lambda"
+  name   = var.name
+  tags   = var.tags
   lambda = {
     package = "lambda_handler.zip"
     handler = "lambda_handler.lambda_handler"
@@ -136,11 +137,4 @@ module "lambda" {
   tracing     = var.tracing_config
   vpc         = var.vpc_config
   policy_arns = [module.logs.policy_arns["write"]]
-}
-
-# cloudwatch logs
-module "logs" {
-  source    = "Young-ook/lambda/aws//modules/logs"
-  name      = var.name
-  log_group = var.log_config
 }

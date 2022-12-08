@@ -9,11 +9,21 @@ variable "bus" {
 }
 
 variable "rules" {
-  description = "List of event rules configuration"
+  description = "A configuration list of event rules"
   default     = []
   validation {
-    condition     = var.rules != null && length(var.rules) > 0
+    condition     = var.rules != null
     error_message = "List of eventbridge rules is not valid."
+  }
+}
+
+variable "targets" {
+  description = "A configuration list of event route target definitions"
+  type        = any
+  default     = []
+  validation {
+    condition     = var.targets != null
+    error_message = "List of eventbridge rule targets is not valid."
   }
 }
 

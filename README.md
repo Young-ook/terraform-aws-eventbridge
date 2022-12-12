@@ -37,5 +37,3 @@ tfenv use <version>
 ```
 
 # Additional Resources
-- [Building an event-driven application with Amazon EventBridge](https://aws.amazon.com/blogs/compute/building-an-event-driven-application-with-amazon-eventbridge/)
-- [Use AWS Step Functions to Monitor Services Choreography](https://aws.amazon.com/blogs/architecture/use-aws-step-functions-to-monitor-services-choreography/)

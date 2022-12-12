@@ -6,7 +6,7 @@ Event-driven architecture is common in modern applications built with microservi
 ![aws-event-driven-architecture](../../images/aws-event-driven-architecture.png)
 
 ## Setup
-## Download
+### Download
 Download this example on your workspace
 ```sh
 git clone https://github.com/Young-ook/terraform-aws-eventbridge

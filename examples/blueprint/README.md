@@ -52,6 +52,7 @@ terraform destroy -var-file fixture.tc1.tfvars
 
 ## Amazon EventBridge
 - [Building an event-driven application with Amazon EventBridge](https://aws.amazon.com/blogs/compute/building-an-event-driven-application-with-amazon-eventbridge/)
+- [Building an IAM Role swithcing tracker using Amazon EventBrdige andn AWS Lambda](https://github.com/Young-ook/terraform-aws-passport/tree/main/examples/role-switching-tracker)
 
 ## AWS Lambda
 - [Lambda quotas](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html)

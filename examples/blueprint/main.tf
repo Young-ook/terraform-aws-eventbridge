@@ -57,7 +57,7 @@ module "aws" {
 
 ### security/policy
 resource "aws_iam_role" "invoke-sfn" {
-  name = join("-", [var.name == null ? "" : var.name, "invoke-sfn"])
+  name = join("-", [var.name == null ? "eda" : var.name, "invoke-sfn"])
   tags = var.tags
   assume_role_policy = jsonencode({
     Statement = [{
@@ -71,7 +71,7 @@ resource "aws_iam_role" "invoke-sfn" {
   })
 
   inline_policy {
-    name = join("-", [var.name == null ? "" : var.name, "invoke-sfn"])
+    name = join("-", [var.name == null ? "eda" : var.name, "invoke-sfn"])
     policy = jsonencode({
       Version = "2012-10-17",
       Statement = [{
@@ -107,7 +107,7 @@ EOF
 }
 
 resource "aws_iam_policy" "invoke-lambda" {
-  name = join("-", [var.name == null ? "" : var.name, "invoke-lambda"])
+  name = join("-", [var.name == null ? "eda" : var.name, "invoke-lambda"])
   tags = var.tags
   policy = jsonencode({
     Version = "2012-10-17",

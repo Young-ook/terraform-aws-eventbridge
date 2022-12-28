@@ -76,7 +76,7 @@ module "pipeline" {
         output_artifacts = ["build_output"]
         run_order        = 2
         configuration = {
-          ProjectName = module.build.project.name
+          ProjectName = module.build["build"].project.id
         }
       }]
     },

@@ -1,20 +1,20 @@
 ### pipeline/artifact
 resource "random_pet" "petname" {
-  for_each  = { bucket = 3, github = 3 }
-  length    = each.value3
+  for_each  = toset(["bucket", "github"])
+  length    = 3
   separator = "-"
 }
 
 module "artifact" {
   source        = "Young-ook/sagemaker/aws//modules/s3"
   version       = "0.2.0"
-  name          = random_pet["bucket"].id
+  name          = random_pet.petname["bucket"].id
   tags          = var.tags
   force_destroy = true
 }
 
 resource "aws_iam_policy" "github" {
-  name        = random_pet["github"].id
+  name        = random_pet.petname["github"].id
   description = "Allows to run code build"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -29,7 +29,7 @@ resource "aws_iam_policy" "github" {
 }
 
 resource "aws_codestarconnections_connection" "github" {
-  name          = random_pet["github"].id
+  name          = random_pet.petname["github"].id
   provider_type = "GitHub"
 }
 
@@ -76,7 +76,7 @@ module "pipeline" {
         output_artifacts = ["build_output"]
         run_order        = 2
         configuration = {
-          ProjectName = module.build.project.name
+          ProjectName = module.build["build"].project.id
         }
       }]
     },

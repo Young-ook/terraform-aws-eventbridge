@@ -30,21 +30,23 @@ locals {
 
 ### choreography/eventbus
 module "default-eventbus" {
-  source = "../../"
-  name   = "default"
-  rules  = local.event_rules
+  source  = "Young-ook/eventbridge/aws"
+  version = "0.0.8"
+  name    = "default"
+  rules   = local.event_rules
 }
 
 module "custom-eventbus" {
-  source = "../../"
-  name   = "custom-eventbus"
-  rules  = [element(local.event_rules, 1)]
+  source  = "Young-ook/eventbridge/aws"
+  version = "0.0.8"
+  name    = "custom-eventbus"
+  rules   = [element(local.event_rules, 1)]
 }
 
 ### choreography/route
 resource "aws_cloudwatch_event_target" "sfn" {
   for_each = { for e in local.event_rules : e.name => e }
-  rule     = module.eventbus.rules[each.key].name
+  rule     = module.default-eventbus.rules[each.key].name
   arn      = module.sfn.states.arn
   role_arn = aws_iam_role.invoke-sfn.arn
 }
@@ -127,14 +129,14 @@ data "archive_file" "lambda_zip_file" {
 
 ### application/function
 module "lambda" {
-  source = "../../modules/lambda"
-  name   = var.name
-  tags   = var.tags
+  source  = "Young-ook/eventbridge/aws//modules/lambda"
+  version = "0.0.8"
+  name    = var.name
+  tags    = var.tags
   lambda = {
     package = "lambda_handler.zip"
     handler = "lambda_handler.lambda_handler"
   }
-  tracing     = var.tracing_config
-  vpc         = var.vpc_config
-  policy_arns = [module.logs.policy_arns["write"]]
+  tracing = var.tracing_config
+  vpc     = var.vpc_config
 }

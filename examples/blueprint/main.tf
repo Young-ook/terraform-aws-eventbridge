@@ -46,7 +46,7 @@ module "custom-eventbus" {
 ### choreography/route
 resource "aws_cloudwatch_event_target" "sfn" {
   for_each = { for e in local.event_rules : e.name => e }
-  rule     = module.eventbus.rules[each.key].name
+  rule     = module.default-eventbus.rules[each.key].name
   arn      = module.sfn.states.arn
   role_arn = aws_iam_role.invoke-sfn.arn
 }

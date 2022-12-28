@@ -137,7 +137,6 @@ module "lambda" {
     package = "lambda_handler.zip"
     handler = "lambda_handler.lambda_handler"
   }
-  tracing     = var.tracing_config
-  vpc         = var.vpc_config
-  policy_arns = [module.logs.policy_arns["write"]]
+  tracing = var.tracing_config
+  vpc     = var.vpc_config
 }

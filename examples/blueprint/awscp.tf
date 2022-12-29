@@ -1,38 +1,4 @@
-### pipeline/artifact
-resource "random_pet" "petname" {
-  for_each  = toset(["bucket", "github"])
-  length    = 3
-  separator = "-"
-}
-
-module "artifact" {
-  source        = "Young-ook/sagemaker/aws//modules/s3"
-  version       = "0.2.0"
-  name          = random_pet.petname["bucket"].id
-  tags          = var.tags
-  force_destroy = true
-}
-
-resource "aws_iam_policy" "github" {
-  name        = random_pet.petname["github"].id
-  description = "Allows to run code build"
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        "Effect"   = "Allow"
-        "Action"   = ["codestar-connections:UseConnection"]
-        "Resource" = aws_codestarconnections_connection.github.arn
-      },
-    ]
-  })
-}
-
-resource "aws_codestarconnections_connection" "github" {
-  name          = random_pet.petname["github"].id
-  provider_type = "GitHub"
-}
-
+### pipeline
 module "pipeline" {
   source  = "Young-ook/eventbridge/aws//modules/pipeline"
   version = "0.0.7"
@@ -80,7 +46,58 @@ module "pipeline" {
         }
       }]
     },
+    {
+      name = "Deploy"
+      actions = [{
+        name            = "Deploy"
+        category        = "Deploy"
+        owner           = "AWS"
+        provider        = "CodeDeploy"
+        version         = "1"
+        input_artifacts = ["build_output"]
+        run_order       = 3
+        configuration = {
+          ApplicationName     = aws_codedeploy_app.lambda-running.name
+          DeploymentGroupName = aws_codedeploy_deployment_group.lambda-running.id
+        }
+      }]
+    },
   ]
+}
+
+resource "random_pet" "petname" {
+  for_each  = toset(["bucket", "github"])
+  length    = 3
+  separator = "-"
+}
+
+### pipeline/artifact
+module "artifact" {
+  source        = "Young-ook/sagemaker/aws//modules/s3"
+  version       = "0.2.0"
+  name          = random_pet.petname["bucket"].id
+  tags          = var.tags
+  force_destroy = true
+}
+
+resource "aws_iam_policy" "github" {
+  name        = random_pet.petname["github"].id
+  description = "Allows to run code build"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect"   = "Allow"
+        "Action"   = ["codestar-connections:UseConnection"]
+        "Resource" = aws_codestarconnections_connection.github.arn
+      },
+    ]
+  })
+}
+
+resource "aws_codestarconnections_connection" "github" {
+  name          = random_pet.petname["github"].id
+  provider_type = "GitHub"
 }
 
 locals {
@@ -93,6 +110,7 @@ locals {
   ]
 }
 
+### pipeline/build
 module "build" {
   for_each    = { for proj in local.projects : proj.name => proj }
   source      = "Young-ook/spinnaker/aws//modules/codebuild"
@@ -113,10 +131,45 @@ module "build" {
       image           = lookup(each.value, "image", "aws/codebuild/standard:4.0")
       privileged_mode = true
       environment_variables = {
+        ARTIFACT_BUCKET = module.artifact.bucket.id
         APP_PATH        = lookup(each.value, "app_path")
         PKG             = "lambda_handler.zip"
-        ARTIFACT_BUCKET = module.artifact.bucket.id
       }
     }
   }
+}
+
+### deploy
+resource "aws_codedeploy_app" "lambda-running" {
+  name             = var.name == null || var.name == "eda" ? "lambda-running" : var.name
+  tags             = var.tags
+  compute_platform = "Lambda"
+}
+
+resource "aws_codedeploy_deployment_group" "lambda-running" {
+  app_name               = aws_codedeploy_app.lambda-running.name
+  tags                   = var.tags
+  deployment_group_name  = var.name == null || var.name == "eda" ? "lambda-running" : var.name
+  deployment_config_name = "CodeDeployDefault.LambdaAllAtOnce"
+  service_role_arn       = aws_iam_role.deploy-lambda.arn
+
+  deployment_style {
+    deployment_option = "WITH_TRAFFIC_CONTROL"
+    deployment_type   = "BLUE_GREEN"
+  }
+}
+
+resource "aws_iam_role" "deploy-lambda" {
+  name = join("-", [var.name == null ? "eda" : var.name, "deploy-lambda"])
+  tags = var.tags
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = ["sts:AssumeRole"]
+      Effect = "Allow"
+      Principal = {
+        Service = "codedeploy.amazonaws.com"
+      }
+    }]
+  })
 }

@@ -141,7 +141,7 @@ module "build" {
 
 ### deploy
 resource "aws_codedeploy_app" "lambda-running" {
-  name             = var.name == null || var.name == "eda" ? "lambda-running" : var.name
+  name             = join("-", [var.name == null ? "eda" : var.name, "lambda-running"])
   tags             = var.tags
   compute_platform = "Lambda"
 }
@@ -149,7 +149,7 @@ resource "aws_codedeploy_app" "lambda-running" {
 resource "aws_codedeploy_deployment_group" "lambda-running" {
   app_name               = aws_codedeploy_app.lambda-running.name
   tags                   = var.tags
-  deployment_group_name  = var.name == null || var.name == "eda" ? "lambda-running" : var.name
+  deployment_group_name  = join("-", [var.name == null ? "eda" : var.name, "lambda-running"])
   deployment_config_name = "CodeDeployDefault.LambdaAllAtOnce"
   service_role_arn       = aws_iam_role.deploy-lambda.arn
 

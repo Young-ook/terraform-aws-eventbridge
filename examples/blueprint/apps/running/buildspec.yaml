@@ -15,6 +15,8 @@ phases:
       - cd ${OLDPWD}
   post_build:
     commands:
-      - aws s3 cp ${PKG} s3://${ARTIFACT_BUCKET}/
+      - aws lambda get-alias
+      - aws lambda update-function-code --zip-file --publish --query '.Version'
+      - sed -i appspec.yaml
 artifacts:
-  files: ${PKG}
+  files: ${APP_PATH}/appspec.yaml

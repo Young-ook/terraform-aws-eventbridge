@@ -104,7 +104,7 @@ locals {
   projects = [
     {
       name      = "build"
-      buildspec = "examples/blueprint/apps/running/build.yaml"
+      buildspec = "examples/blueprint/apps/running/buildspec.yaml"
       app_path  = "examples/blueprint/apps/running"
     },
   ]

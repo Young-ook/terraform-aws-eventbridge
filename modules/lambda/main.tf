@@ -98,6 +98,6 @@ module "logs" {
   name    = local.name
   log_group = {
     namespace         = lookup(var.logs, "namespace", "/aws/lambda")
-    retention_in_days = lookup(var.logs, "retension_days", 7)
+    retention_in_days = lookup(var.logs, "retention_days", 7)
   }
 }

@@ -34,15 +34,16 @@ variable "logs" {
 
 ### security
 variable "policy_arns" {
-  description = "A list of policy ARNs to attach the role for lambda function"
+  description = "List of policy ARNs for lambda function"
   type        = list(string)
   default     = []
 }
 
 ### description
 variable "name" {
-  description = "The logical name of the module instance"
+  description = "Lambda function name"
   type        = string
+  default     = null
 }
 
 ### tags

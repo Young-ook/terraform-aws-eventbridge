@@ -16,18 +16,6 @@ variable "lambda" {
   default     = {}
 }
 
-### log
-variable "log" {
-  description = "Log configuration for function"
-  default     = {}
-}
-
-### tracing
-variable "tracing" {
-  description = "AWS X-ray tracing configuration for function"
-  default     = {}
-}
-
 ### description
 variable "name" {
   description = "The logical name of user"

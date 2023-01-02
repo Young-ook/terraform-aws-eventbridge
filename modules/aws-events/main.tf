@@ -21,11 +21,13 @@ resource "aws_lambda_permission" "lambda" {
 
 # lambda
 module "lambda" {
-  source  = "Young-ook/eventbridge/aws//modules/lambda"
-  version = "0.0.8"
-  name    = var.name
-  tags    = var.tags
-  lambda  = var.lambda
-  tracing = var.tracing
-  vpc     = var.vpc
+  source      = "Young-ook/eventbridge/aws//modules/lambda"
+  version     = "0.0.8"
+  name        = var.name
+  tags        = var.tags
+  lambda      = lookup(var.lambda, "function")
+  logs        = lookup(var.lambda, "logs", {})
+  tracing     = lookup(var.lambda, "tracing", {})
+  policy_arns = lookup(var.lambda, "policy", [])
+  vpc         = var.vpc
 }

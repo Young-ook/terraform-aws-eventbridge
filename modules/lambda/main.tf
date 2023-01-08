@@ -1,6 +1,10 @@
-### serverless aws lambda
-
 ### computing/function
+resource "aws_lambda_alias" "alias" {
+  name             = local.name
+  function_name    = aws_lambda_function.lambda.function_name
+  function_version = aws_lambda_function.lambda.version
+}
+
 resource "aws_lambda_function" "lambda" {
   function_name                  = local.name
   filename                       = lookup(var.lambda, "package", local.default_lambda_config["package"])
@@ -13,6 +17,7 @@ resource "aws_lambda_function" "lambda" {
   timeout                        = lookup(var.lambda, "timeout", local.default_lambda_config["timeout"])
   reserved_concurrent_executions = lookup(var.lambda, "provisioned_concurrency", local.default_lambda_config["provisioned_concurrency"])
   publish                        = lookup(var.lambda, "publish", local.default_lambda_config["publish"])
+  source_code_hash               = lookup(var.lambda, "source_code_hash", local.default_lambda_config["source_code_hash"])
   layers                         = lookup(var.lambda, "layers", local.default_lambda_config["layers"])
   role                           = aws_iam_role.lambda.arn
   tags                           = merge(local.default-tags, var.tags)

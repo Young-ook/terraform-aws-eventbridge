@@ -15,6 +15,7 @@ locals {
     layers                  = []
     region                  = module.aws.region.name
     provisioned_concurrency = -1
+    source_code_hash        = null
     environment_variables   = {}
   }
   default_bucket_config = {

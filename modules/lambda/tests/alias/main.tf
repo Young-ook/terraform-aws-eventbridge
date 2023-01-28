@@ -24,6 +24,17 @@ module "main" {
   }
 }
 
+### invoke
+data "aws_lambda_invocation" "invoke" {
+  depends_on    = [module.main]
+  function_name = module.main.function.function_name
+  input = jsonencode({
+    key1 = "value1"
+    key2 = "value2"
+    key3 = "value3"
+  })
+}
+
 resource "test_assertions" "alias_name" {
   component = "alias_name"
 

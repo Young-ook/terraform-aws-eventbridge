@@ -18,6 +18,16 @@ variable "lambda" {
   }
 }
 
+variable "layer" {
+  description = "Lambda layer configuration"
+  type        = any
+  default     = {}
+  validation {
+    condition     = var.layer != null
+    error_message = "Layer configuration must not be null."
+  }
+}
+
 ### observability/tracing
 variable "tracing" {
   description = "Tracing configuration for function"

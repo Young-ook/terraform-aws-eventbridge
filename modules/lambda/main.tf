@@ -1,11 +1,21 @@
+### aws lambda
+
+### condition
+locals {
+  lambda_enabled = (var.lambda != null && length(var.lambda) > 0) ? true : false
+  layer_enabled  = (var.layer != null && length(var.layer) > 0) ? true : false
+}
+
 ### computing/function
 resource "aws_lambda_alias" "alias" {
+  for_each         = toset(local.lambda_enabled ? ["enabled"] : [])
   name             = local.name
-  function_name    = aws_lambda_function.lambda.function_name
-  function_version = aws_lambda_function.lambda.version
+  function_name    = aws_lambda_function.lambda["enabled"].function_name
+  function_version = aws_lambda_function.lambda["enabled"].version
 }
 
 resource "aws_lambda_function" "lambda" {
+  for_each                       = toset(local.lambda_enabled ? ["enabled"] : [])
   function_name                  = local.name
   filename                       = lookup(var.lambda, "package", local.default_lambda_config["package"])
   s3_bucket                      = lookup(var.lambda, "s3_bucket", local.default_bucket_config["s3_bucket"])
@@ -18,13 +28,9 @@ resource "aws_lambda_function" "lambda" {
   reserved_concurrent_executions = lookup(var.lambda, "provisioned_concurrency", local.default_lambda_config["provisioned_concurrency"])
   publish                        = lookup(var.lambda, "publish", local.default_lambda_config["publish"])
   source_code_hash               = lookup(var.lambda, "source_code_hash", local.default_lambda_config["source_code_hash"])
-  layers                         = lookup(var.lambda, "layers", local.default_lambda_config["layers"])
-  role                           = aws_iam_role.lambda.arn
+  layers                         = local.layer_enabled ? [aws_lambda_layer_version.layer["enabled"].arn] : lookup(var.lambda, "layers", local.default_lambda_config["layers"])
+  role                           = aws_iam_role.lambda["enabled"].arn
   tags                           = merge(local.default-tags, var.tags)
-
-  lifecycle {
-    ignore_changes = [filename]
-  }
 
   dynamic "environment" {
     for_each = lookup(var.lambda, "environment_variables", null) != null ? {
@@ -57,7 +63,8 @@ resource "aws_lambda_function" "lambda" {
 
 ### security/policy
 resource "aws_iam_role" "lambda" {
-  name = format("%s-lambda", local.name)
+  for_each = toset(local.lambda_enabled ? ["enabled"] : [])
+  name     = format("%s-lambda", local.name)
   assume_role_policy = jsonencode({
     Statement = [{
       Action = "sts:AssumeRole"
@@ -71,36 +78,56 @@ resource "aws_iam_role" "lambda" {
 }
 
 resource "aws_iam_role_policy_attachment" "execution" {
-  role       = aws_iam_role.lambda.name
+  for_each   = toset(local.lambda_enabled ? ["enabled"] : [])
+  role       = aws_iam_role.lambda["enabled"].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 resource "aws_iam_role_policy_attachment" "vpc-access" {
-  role       = aws_iam_role.lambda.name
+  for_each   = toset(local.lambda_enabled ? ["enabled"] : [])
+  role       = aws_iam_role.lambda["enabled"].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
 resource "aws_iam_role_policy_attachment" "tracing" {
-  role       = aws_iam_role.lambda.name
+  for_each   = toset(local.lambda_enabled ? ["enabled"] : [])
+  role       = aws_iam_role.lambda["enabled"].name
   policy_arn = "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "logs" {
-  role       = aws_iam_role.lambda.name
-  policy_arn = module.logs.policy_arns["write"]
+  for_each   = toset(local.lambda_enabled ? ["enabled"] : [])
+  role       = aws_iam_role.lambda["enabled"].name
+  policy_arn = module.logs["enabled"].policy_arns["write"]
 }
 
 resource "aws_iam_role_policy_attachment" "extra" {
-  for_each   = { for key, val in var.policy_arns : key => val }
-  role       = aws_iam_role.lambda.name
+  for_each   = { for key, val in var.policy_arns : key => val if local.lambda_enabled }
+  role       = aws_iam_role.lambda["enabled"].name
   policy_arn = each.value
+}
+
+### computing/layer
+resource "aws_lambda_layer_version" "layer" {
+  for_each                 = toset(local.layer_enabled ? ["enabled"] : [])
+  layer_name               = local.name
+  description              = lookup(var.layer, "desc", local.default_layer_config["desc"])
+  license_info             = lookup(var.layer, "license", local.default_layer_config["license"])
+  compatible_runtimes      = lookup(var.layer, "runtime", local.default_layer_config["runtime"])
+  compatible_architectures = lookup(var.layer, "arch", local.default_layer_config["arch"])
+  skip_destroy             = lookup(var.layer, "skip_destroy", false)
+  filename                 = lookup(var.layer, "package", local.default_layer_config["package"])
+  s3_bucket                = lookup(var.layer, "s3_bucket", local.default_bucket_config["s3_bucket"])
+  s3_key                   = lookup(var.layer, "s3_key", local.default_bucket_config["s3_key"])
+  s3_object_version        = lookup(var.layer, "s3_object_version", local.default_bucket_config["s3_object_version"])
 }
 
 ### observability/logs
 module "logs" {
-  source  = "Young-ook/eventbridge/aws//modules/logs"
-  version = "0.0.6"
-  name    = local.name
+  for_each = toset(local.lambda_enabled ? ["enabled"] : [])
+  source   = "Young-ook/eventbridge/aws//modules/logs"
+  version  = "0.0.6"
+  name     = local.name
   log_group = {
     namespace         = lookup(var.logs, "namespace", "/aws/lambda")
     retention_in_days = lookup(var.logs, "retention_days", 7)

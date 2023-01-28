@@ -37,3 +37,4 @@ local.*.tfvars
 
 # Local .zip files for lambda package archive
 **/examples/**/*.zip
+**/tests/**/*.zip

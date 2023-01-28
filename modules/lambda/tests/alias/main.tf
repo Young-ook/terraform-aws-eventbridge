@@ -9,7 +9,7 @@ terraform {
 ### application/package
 data "archive_file" "lambda_zip_file" {
   output_path = join("/", [path.module, "lambda_handler.zip"])
-  source_file = join("/", [path.module, "lambda_function.py"])
+  source_file = join("/", [path.module, "../lambda_function.py"])
   type        = "zip"
 }
 

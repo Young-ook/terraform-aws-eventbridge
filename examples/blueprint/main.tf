@@ -125,6 +125,9 @@ data "archive_file" "lambda_zip_file" {
     {
       name = "running"
     },
+    {
+      name = "httpd"
+    },
   ] : fn.name => fn }
   output_path = join("/", [path.module, "apps", "build", "${each.key}.zip"])
   source_dir  = join("/", [path.module, "apps", each.key])
@@ -143,13 +146,67 @@ module "lambda" {
         package = data.archive_file.lambda_zip_file["running"].output_path
         handler = "lambda_up_and_running.lambda_handler"
       }
-      tracing = {}
-      vpc     = var.vpc_config
+      tracing     = {}
+      vpc         = var.vpc_config
+      policy_arns = []
+    },
+    {
+      name = "httpd"
+      function = {
+        package = data.archive_file.lambda_zip_file["httpd"].output_path
+        handler = "lambda_function_over_https.lambda_handler"
+      }
+      tracing     = {}
+      vpc         = var.vpc_config
+      policy_arns = [aws_iam_policy.ddb-access.arn]
     },
   ] : fn.name => fn }
-  name    = each.key
-  tags    = var.tags
-  lambda  = lookup(each.value, "function")
-  tracing = lookup(each.value, "tracing")
-  vpc     = lookup(each.value, "vpc")
+  name        = each.key
+  tags        = var.tags
+  lambda      = lookup(each.value, "function")
+  tracing     = lookup(each.value, "tracing")
+  vpc         = lookup(each.value, "vpc")
+  policy_arns = lookup(each.value, "policy_arns")
+}
+
+### security/policy
+resource "aws_iam_policy" "ddb-access" {
+  name = "lambda_apigateway_policy"
+  path = "/"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "dynamodb:DeleteItem",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:Query",
+          "dynamodb:Scan",
+          "dynamodb:UpdateItem"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+### database/dynamodb
+module "dynamodb" {
+  source       = "../../modules/dynamodb"
+  name         = "lambda-apigateway"
+  tags         = var.tags
+  billing_mode = lookup(var.dynamodb_config, "billing_mode", "PROVISIONED")
+
+  attributes = [
+    {
+      name = "id"
+      type = "S"
+    },
+  ]
+
+  key_schema = {
+    hash_key = "id"
+  }
 }

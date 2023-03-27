@@ -26,6 +26,9 @@ terraform plan -var-file fixture.tc1.tfvars
 terraform apply -var-file fixture.tc1.tfvars
 ```
 
+### Enable GitHub connection
+A connection created through the AWS CLI or Terraform is in `PENDING` status by default. After you create a connection with the CLI or Terraform, use the console to edit the connection to make its status `AVAILABLE` before you move to the next step. For more details, open the AWS official [guide](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html) and follow the instructions.
+
 ## Orchestration
 ## Choreography
 ![aws-event-driven-architecture-better-together](../../images/aws-event-driven-architecture-better-together.png)

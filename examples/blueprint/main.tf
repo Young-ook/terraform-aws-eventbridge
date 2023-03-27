@@ -128,7 +128,7 @@ data "archive_file" "lambda_zip_file" {
   ] : fn.name => fn }
   output_path = join("/", [path.module, "apps", "build", "${each.key}.zip"])
   source_dir  = join("/", [path.module, "apps", each.key])
-  excludes    = ["__init__.py", "*.pyc"]
+  excludes    = ["__init__.py", "*.pyc", "*.yaml"]
   type        = "zip"
 }
 
@@ -141,7 +141,7 @@ module "lambda" {
       name = "running"
       function = {
         package = data.archive_file.lambda_zip_file["running"].output_path
-        handler = "running.lambda_handler"
+        handler = "lambda_up_and_running.lambda_handler"
       }
       tracing = {}
       vpc     = var.vpc_config

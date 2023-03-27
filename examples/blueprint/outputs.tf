@@ -5,13 +5,3 @@ output "event" {
     custom-bus  = module.custom-eventbus
   }
 }
-
-output "lambda" {
-  description = "Attributes of lmabda function"
-  value       = module.lambda
-}
-
-output "sfn" {
-  description = "Attributes of step functions state machine for the lmabda function"
-  value       = module.sfn
-}

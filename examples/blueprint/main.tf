@@ -97,7 +97,7 @@ module "sfn" {
   "States": {
     "HelloWorld": {
       "Type": "Task",
-      "Resource": "${module.lambda.function.arn}",
+      "Resource": "${module.lambda["running"].function.arn}",
       "End": true
     }
   }
@@ -114,15 +114,20 @@ resource "aws_iam_policy" "invoke-lambda" {
     Statement = [{
       Action   = ["lambda:InvokeFunction"]
       Effect   = "Allow"
-      Resource = module.lambda.function.arn
+      Resource = module.lambda["running"].function.arn
     }]
   })
 }
 
 ### application/package
 data "archive_file" "lambda_zip_file" {
-  output_path = join("/", [path.module, "lambda_handler.zip"])
-  source_dir  = join("/", [path.module, "apps/running"])
+  for_each = { for fn in [
+    {
+      name = "running"
+    },
+  ] : fn.name => fn }
+  output_path = join("/", [path.module, "apps", "build", "${each.key}.zip"])
+  source_dir  = join("/", [path.module, "apps", each.key])
   excludes    = ["__init__.py", "*.pyc"]
   type        = "zip"
 }
@@ -131,12 +136,20 @@ data "archive_file" "lambda_zip_file" {
 module "lambda" {
   source  = "Young-ook/eventbridge/aws//modules/lambda"
   version = "0.0.8"
-  name    = var.name
+  for_each = { for fn in [
+    {
+      name = "running"
+      function = {
+        package = data.archive_file.lambda_zip_file["running"].output_path
+        handler = "running.lambda_handler"
+      }
+      tracing = {}
+      vpc     = var.vpc_config
+    },
+  ] : fn.name => fn }
+  name    = each.key
   tags    = var.tags
-  lambda = {
-    package = "lambda_handler.zip"
-    handler = "lambda_handler.lambda_handler"
-  }
-  tracing = var.tracing_config
-  vpc     = var.vpc_config
+  lambda  = lookup(each.value, "function")
+  tracing = lookup(each.value, "tracing")
+  vpc     = lookup(each.value, "vpc")
 }

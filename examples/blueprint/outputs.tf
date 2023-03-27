@@ -8,7 +8,7 @@ output "event" {
 
 output "lambda" {
   description = "Attributes of lmabda function"
-  value       = module.lambda.function
+  value       = module.lambda
 }
 
 output "sfn" {

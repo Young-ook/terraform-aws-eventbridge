@@ -13,6 +13,13 @@ variable "vpc_config" {
   default     = {}
 }
 
+### eventbus
+variable "event_config" {
+  description = "Event rules configuration"
+  type        = map(any)
+  default     = {}
+}
+
 ### function
 variable "lambda_config" {
   description = "Lambda function configuration"
@@ -20,31 +27,28 @@ variable "lambda_config" {
   default     = {}
 }
 
-variable "event_config" {
-  description = "Event rules configuration"
-  type        = map(any)
-  default     = {}
-}
-
-### log
 variable "log_config" {
   description = "Log configuration for function"
   type        = map(any)
   default     = {}
 }
 
-### tracing
 variable "tracing_config" {
   description = "AWS X-ray tracing configuration for function"
   type        = map(any)
   default     = {}
 }
 
-### security
 variable "policy_arns" {
   description = "A list of policy ARNs to attach the role for lambda function"
   type        = list(string)
   default     = []
+}
+
+### dynamodb
+variable "dynamodb_config" {
+  description = "DynamoDB table configuration"
+  default     = {}
 }
 
 ### description

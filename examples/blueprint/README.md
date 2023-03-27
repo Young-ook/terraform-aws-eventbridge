@@ -30,6 +30,9 @@ terraform apply -var-file fixture.tc1.tfvars
 ## Choreography
 ![aws-event-driven-architecture-better-together](../../images/aws-event-driven-architecture-better-together.png)
 
+## Applications
+- [AWS Lambda with Amazon API Gateway](apps/README.md#amazon-api-gateway)
+
 ## Clean up
 To destroy all infrastrcuture, run terraform:
 ```

@@ -1,3 +1,4 @@
+### application/apigw
 resource "aws_api_gateway_rest_api" "apigw" {
   name        = "lambda-apigateway"
   description = "Managed by Terraform"
@@ -22,7 +23,7 @@ resource "aws_api_gateway_integration" "lambda" {
   http_method             = aws_api_gateway_method.proxy.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = module.lambda.function.invoke_arn
+  uri                     = module.lambda["httpd"].function.invoke_arn
 }
 
 resource "aws_api_gateway_method" "proxy_root" {
@@ -38,7 +39,7 @@ resource "aws_api_gateway_integration" "lambda_root" {
   http_method             = aws_api_gateway_method.proxy_root.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = module.lambda.function.invoke_arn
+  uri                     = module.lambda["httpd"].function.invoke_arn
 }
 
 resource "aws_api_gateway_deployment" "apigw" {

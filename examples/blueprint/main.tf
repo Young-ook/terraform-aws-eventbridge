@@ -135,7 +135,7 @@ data "archive_file" "lambda_zip_file" {
 ### application/function
 module "lambda" {
   source  = "Young-ook/eventbridge/aws//modules/lambda"
-  version = "0.0.8"
+  version = "0.0.9"
   for_each = { for fn in [
     {
       name = "running"

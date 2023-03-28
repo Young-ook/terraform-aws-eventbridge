@@ -6,7 +6,7 @@
 ### Setup
 ```hcl
 module "logs" {
-  source  = "Young-ook/lambda/aws//modules/logs"
+  source  = "Young-ook/eventbridge/aws//modules/logs"
   name    = "example"
 }
 ```

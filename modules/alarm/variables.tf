@@ -25,13 +25,13 @@ variable "metric_query" {
 
 ### description
 variable "name" {
-  description = "Name of metric alarm. This name must be unique within the AWS account"
+  description = "Alarm name"
   type        = string
   default     = ""
 }
 
 variable "description" {
-  description = "The description for the alarm."
+  description = "Alarm description"
   type        = string
   default     = null
 }

@@ -4,16 +4,18 @@
 locals {
   lambda_enabled = (var.lambda != null && length(var.lambda) > 0) ? true : false
   layer_enabled  = (var.layer != null && length(var.layer) > 0) ? true : false
+  alias_enabled  = (local.lambda_enabled && can(var.lambda.aliases)) ? true : false
+}
+
+### computing/environment
+resource "aws_lambda_alias" "alias" {
+  for_each         = { for a in(local.alias_enabled ? var.lambda.aliases : []) : a.name => a }
+  name             = each.key
+  function_version = try(each.value.version, "$LATEST")
+  function_name    = aws_lambda_function.lambda["enabled"].function_name
 }
 
 ### computing/function
-resource "aws_lambda_alias" "alias" {
-  for_each         = toset(local.lambda_enabled ? ["enabled"] : [])
-  name             = local.name
-  function_name    = aws_lambda_function.lambda["enabled"].function_name
-  function_version = aws_lambda_function.lambda["enabled"].version
-}
-
 resource "aws_lambda_function" "lambda" {
   for_each                       = toset(local.lambda_enabled ? ["enabled"] : [])
   function_name                  = local.name

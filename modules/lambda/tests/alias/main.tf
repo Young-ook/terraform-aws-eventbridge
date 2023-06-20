@@ -21,6 +21,15 @@ module "main" {
     package          = data.archive_file.lambda_zip_file.output_path
     source_code_hash = data.archive_file.lambda_zip_file.output_base64sha256
     publish          = true
+    aliases = [
+      {
+        name    = "dev"
+        version = "$LATEST"
+      },
+      {
+        name = "prod"
+      },
+    ]
   }
 }
 
@@ -40,6 +49,6 @@ resource "test_assertions" "alias_name" {
 
   check "alias_name" {
     description = "lambda alias name"
-    condition   = can(regex("^lambda", module.main.alias.name))
+    condition   = module.main.alias["dev"].alias.version == "$LATEST"
   }
 }

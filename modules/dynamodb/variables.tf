@@ -11,19 +11,19 @@ variable "key_schema" {
 }
 
 variable "global_secondary_indices" {
-  description = "Describe a Global Secondary Indices (GSI) for the table"
+  description = "Global Secondary Indices (GSI) for the table"
   type        = list(any)
   default     = []
 }
 
 variable "local_secondary_indices" {
-  description = "Describe an Local Secondary Indices (LSI) on the table"
+  description = "Local Secondary Indices (LSI) on the table"
   type        = list(any)
   default     = []
 }
 
 variable "billing_mode" {
-  description = "Controls how you are billed for read/write throughput and how you manage capacity."
+  description = "Configuration for billing mode to contorl how to adjust the read/write throughput and how you manage capacity"
   type        = string
   default     = "PAY_PER_REQUEST"
   validation {
@@ -46,13 +46,13 @@ variable "scaling" {
 }
 
 variable "server_side_encryption" {
-  description = "A configuration of server side encryption"
+  description = "Server side encryption (SSE) configuration"
   type        = map(any)
   default     = {}
 }
 
 variable "point_in_time_recovery" {
-  description = "Indicates whether to enable point-in-time recovery"
+  description = "Point-in-time recovery configuration"
   type        = bool
   default     = false
 }
@@ -68,7 +68,7 @@ variable "ttl" {
 
 ### description
 variable "name" {
-  description = "The logical name of the module instance"
+  description = "DynamoDB table name"
   type        = string
 }
 

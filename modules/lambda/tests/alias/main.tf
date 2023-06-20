@@ -21,7 +21,7 @@ module "main" {
     package          = data.archive_file.lambda_zip_file.output_path
     source_code_hash = data.archive_file.lambda_zip_file.output_base64sha256
     publish          = true
-    alias = [
+    aliases = [
       {
         name    = "dev"
         version = "$LATEST"

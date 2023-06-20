@@ -18,7 +18,7 @@ variable "stage_config" {
 
 ### description
 variable "name" {
-  description = "Name of metric alarm. This name must be unique within the AWS account"
+  description = "Pipeline name"
   type        = string
   default     = null
 }

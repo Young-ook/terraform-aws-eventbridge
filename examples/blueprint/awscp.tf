@@ -74,7 +74,7 @@ resource "random_pet" "petname" {
 ### pipeline/artifact
 module "artifact" {
   source        = "Young-ook/sagemaker/aws//modules/s3"
-  version       = "0.3.3"
+  version       = "0.4.0"
   name          = random_pet.petname["bucket"].id
   tags          = var.tags
   force_destroy = true

@@ -2,7 +2,7 @@
 
 output "alias" {
   description = "Attributes of lmabda function alias"
-  value       = local.lambda_enabled ? aws_lambda_alias.alias["enabled"] : null
+  value       = local.alias_enabled ? aws_lambda_alias.alias : null
 }
 
 output "function" {

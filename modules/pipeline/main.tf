@@ -1,6 +1,8 @@
-module "aws-partitions" {
-  source  = "Young-ook/spinnaker/aws//modules/aws-partitions"
-  version = ">= 2.0"
+### AWS CodePipeline
+
+## aws partition and region (global, gov, china)
+module "aws" {
+  source = "Young-ook/spinnaker/aws//modules/aws-partitions"
 }
 
 # security/policy
@@ -12,7 +14,7 @@ resource "aws_iam_role" "cp" {
       Action = "sts:AssumeRole"
       Effect = "Allow"
       Principal = {
-        Service = format("codepipeline.%s", module.aws-partitions.partition.dns_suffix)
+        Service = format("codepipeline.%s", module.aws.partition.dns_suffix)
       }
     }]
     Version = "2012-10-17"

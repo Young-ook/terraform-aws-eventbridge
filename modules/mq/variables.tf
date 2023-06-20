@@ -12,7 +12,7 @@ variable "mq" {
 
 ### description
 variable "name" {
-  description = "Name of message queue"
+  description = "Message queue name"
   type        = string
   default     = null
 }

@@ -13,7 +13,7 @@ variable "log_metric_filters" {
 
 ### description
 variable "name" {
-  description = "Name of container image repository"
+  description = "Log group name"
   type        = string
   default     = null
 }

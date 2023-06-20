@@ -18,7 +18,7 @@ variable "lambda" {
 
 ### description
 variable "name" {
-  description = "The logical name of user"
+  description = "Construct library instance name"
   default     = null
 }
 

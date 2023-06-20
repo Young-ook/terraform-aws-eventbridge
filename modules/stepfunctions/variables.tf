@@ -7,21 +7,21 @@ variable "policy_arns" {
 
 ### state machine flow
 variable "sfn_config" {
-  description = "Step functions state machine configuration"
+  description = "State machine workflow definitions"
   type        = map(any)
   default     = {}
 }
 
 ### tracing
 variable "tracing_config" {
-  description = "AWS X-ray tracing configuration for step functions"
+  description = "Tracing configuration for Step Functions"
   type        = map(any)
   default     = {}
 }
 
 ### description
 variable "name" {
-  description = "Name of metric alarm. This name must be unique within the AWS account"
+  description = "Step Functions name"
   type        = string
   default     = null
 }

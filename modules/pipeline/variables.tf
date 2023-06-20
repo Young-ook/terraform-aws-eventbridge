@@ -18,7 +18,7 @@ variable "stage_config" {
 
 ### description
 variable "name" {
-  description = "Resource name"
+  description = "Pipeline name"
   type        = string
   default     = null
 }

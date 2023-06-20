@@ -18,7 +18,7 @@ variable "log_config" {
 
 ### description
 variable "name" {
-  description = "Name of Kafka cluster"
+  description = "Kafka cluster name"
   type        = string
   default     = null
 }

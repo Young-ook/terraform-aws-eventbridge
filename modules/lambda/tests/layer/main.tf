@@ -44,11 +44,11 @@ module "main" {
   layer    = lookup(each.value, "layer", {})
 }
 
-resource "test_assertions" "alias_name" {
-  component = "alias_name"
+resource "test_assertions" "layer_name" {
+  component = "layer_name"
 
-  check "alias_name" {
-    description = "lambda alias name"
-    condition   = can(regex("^lambda", module.main["with-layer"].alias.name))
+  check "layer_name" {
+    description = "lambda layer name"
+    condition   = can(regex("^lambda", module.main["with-layer"].layer.name))
   }
 }

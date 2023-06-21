@@ -106,18 +106,24 @@ locals {
       name      = "build"
       buildspec = "examples/blueprint/apps/running/buildspec.yaml"
       app_path  = "examples/blueprint/apps/running"
+      app_name  = "running"
     },
   ]
 }
 
 ### pipeline/build
 module "build" {
-  for_each    = { for proj in local.projects : proj.name => proj }
-  source      = "Young-ook/spinnaker/aws//modules/codebuild"
-  version     = "2.3.6"
-  name        = each.key
-  tags        = var.tags
-  policy_arns = [each.key == "build" ? module.artifact.policy_arns.write : "arn:aws:iam::aws:policy/AdministratorAccess"]
+  for_each = { for proj in local.projects : proj.name => proj }
+  source   = "Young-ook/spinnaker/aws//modules/codebuild"
+  version  = "2.3.6"
+  name     = each.key
+  tags     = var.tags
+  policy_arns = (each.key == "build" ? [
+    module.artifact.policy_arns.write,
+    "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
+    ] : [
+    "arn:aws:iam::aws:policy/AdministratorAccess"
+  ])
   project = {
     source = {
       type      = "GITHUB"
@@ -134,6 +140,8 @@ module "build" {
         ARTIFACT_BUCKET = module.artifact.bucket.id
         APP_PATH        = lookup(each.value, "app_path")
         PKG             = "lambda_handler.zip"
+        FUNC            = lookup(each.value, "app_name")
+        ALIAS           = "dev"
       }
     }
   }

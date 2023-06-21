@@ -3,7 +3,7 @@ Resources:
 - myfunction:
     Type: AWS::Lambda::Function
     Properties:
-      Name: $FUNC_NAME
-      Alias: $ALIAS_NAME
-      CurrentVersion: $ALIAS_VER
-      TargetVersion: $LATEST_VER
+      Name: {FUNC}
+      Alias: {ALIAS}
+      CurrentVersion: {CURRENT_VER}
+      TargetVersion: {TARGET_VER}

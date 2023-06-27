@@ -6,6 +6,7 @@ module "pipeline" {
   tags    = var.tags
   policy_arns = [
     aws_iam_policy.github.arn,
+    module.artifact.policy_arns.read,
     module.artifact.policy_arns.write,
   ]
   artifact_config = [{
@@ -119,6 +120,7 @@ module "build" {
   name     = each.key
   tags     = var.tags
   policy_arns = (each.key == "build" ? [
+    module.artifact.policy_arns.read,
     module.artifact.policy_arns.write,
     "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
     ] : [

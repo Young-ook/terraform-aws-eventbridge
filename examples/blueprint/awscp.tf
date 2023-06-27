@@ -8,6 +8,7 @@ module "pipeline" {
     aws_iam_policy.github.arn,
     module.artifact.policy_arns.read,
     module.artifact.policy_arns.write,
+    "arn:aws:iam::aws:policy/AWSCodeDeployDeployerAccess",
   ]
   artifact_config = [{
     location = module.artifact.bucket.id

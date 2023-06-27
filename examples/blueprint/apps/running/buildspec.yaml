@@ -34,4 +34,6 @@ phases:
       - sed -i s/{TARGET_VER}/${TARGET_VER}/g ${APP_PATH}/appspec.yaml
       - cat ${APP_PATH}/appspec.yaml
 artifacts:
-  files: ${APP_PATH}/appspec.yaml
+  base-directory: ${APP_PATH}
+  files:
+    - appspec.yaml

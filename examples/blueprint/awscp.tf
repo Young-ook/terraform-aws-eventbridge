@@ -60,7 +60,7 @@ module "pipeline" {
         run_order       = 3
         configuration = {
           ApplicationName     = aws_codedeploy_app.lambda-running.name
-          DeploymentGroupName = aws_codedeploy_deployment_group.lambda-running.id
+          DeploymentGroupName = aws_codedeploy_app.lambda-running.name
         }
       }]
     },
@@ -159,10 +159,10 @@ resource "aws_codedeploy_app" "lambda-running" {
 
 resource "aws_codedeploy_deployment_group" "lambda-running" {
   app_name               = aws_codedeploy_app.lambda-running.name
-  tags                   = var.tags
-  deployment_group_name  = join("-", [var.name == null ? "eda" : var.name, "lambda-running"])
+  deployment_group_name  = aws_codedeploy_app.lambda-running.name
   deployment_config_name = "CodeDeployDefault.LambdaAllAtOnce"
   service_role_arn       = aws_iam_role.deploy-lambda.arn
+  tags                   = var.tags
 
   deployment_style {
     deployment_option = "WITH_TRAFFIC_CONTROL"

@@ -6,7 +6,9 @@ module "pipeline" {
   tags    = var.tags
   policy_arns = [
     aws_iam_policy.github.arn,
+    module.artifact.policy_arns.read,
     module.artifact.policy_arns.write,
+    "arn:aws:iam::aws:policy/AWSCodeDeployDeployerAccess",
   ]
   artifact_config = [{
     location = module.artifact.bucket.id
@@ -58,7 +60,7 @@ module "pipeline" {
         run_order       = 3
         configuration = {
           ApplicationName     = aws_codedeploy_app.lambda-running.name
-          DeploymentGroupName = aws_codedeploy_deployment_group.lambda-running.id
+          DeploymentGroupName = aws_codedeploy_app.lambda-running.name
         }
       }]
     },
@@ -119,6 +121,7 @@ module "build" {
   name     = each.key
   tags     = var.tags
   policy_arns = (each.key == "build" ? [
+    module.artifact.policy_arns.read,
     module.artifact.policy_arns.write,
     "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
     ] : [
@@ -156,10 +159,10 @@ resource "aws_codedeploy_app" "lambda-running" {
 
 resource "aws_codedeploy_deployment_group" "lambda-running" {
   app_name               = aws_codedeploy_app.lambda-running.name
-  tags                   = var.tags
-  deployment_group_name  = join("-", [var.name == null ? "eda" : var.name, "lambda-running"])
+  deployment_group_name  = aws_codedeploy_app.lambda-running.name
   deployment_config_name = "CodeDeployDefault.LambdaAllAtOnce"
   service_role_arn       = aws_iam_role.deploy-lambda.arn
+  tags                   = var.tags
 
   deployment_style {
     deployment_option = "WITH_TRAFFIC_CONTROL"
@@ -167,6 +170,7 @@ resource "aws_codedeploy_deployment_group" "lambda-running" {
   }
 }
 
+### security/policy
 resource "aws_iam_role" "deploy-lambda" {
   name = join("-", [var.name == null ? "eda" : var.name, "deploy-lambda"])
   tags = var.tags
@@ -180,4 +184,15 @@ resource "aws_iam_role" "deploy-lambda" {
       }
     }]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "deploy-lambda" {
+  role       = aws_iam_role.deploy-lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambdaLimited"
+}
+
+resource "aws_iam_role_policy_attachment" "update-metadata" {
+  for_each   = toset(["read", "write"])
+  role       = aws_iam_role.deploy-lambda.name
+  policy_arn = module.artifact.policy_arns[each.key]
 }

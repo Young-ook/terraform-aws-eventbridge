@@ -190,3 +190,9 @@ resource "aws_iam_role_policy_attachment" "deploy-lambda" {
   role       = aws_iam_role.deploy-lambda.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambdaLimited"
 }
+
+resource "aws_iam_role_policy_attachment" "update-metadata" {
+  for_each   = toset(["read", "write"])
+  role       = aws_iam_role.deploy-lambda.name
+  policy_arn = module.artifact.policy_arns[each.key]
+}

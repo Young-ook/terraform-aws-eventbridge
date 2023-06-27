@@ -104,20 +104,26 @@ locals {
   projects = [
     {
       name      = "build"
-      buildspec = "examples/blueprint/apps/running/build.yaml"
+      buildspec = "examples/blueprint/apps/running/buildspec.yaml"
       app_path  = "examples/blueprint/apps/running"
+      app_name  = "running"
     },
   ]
 }
 
 ### pipeline/build
 module "build" {
-  for_each    = { for proj in local.projects : proj.name => proj }
-  source      = "Young-ook/spinnaker/aws//modules/codebuild"
-  version     = "2.3.6"
-  name        = each.key
-  tags        = var.tags
-  policy_arns = [each.key == "build" ? module.artifact.policy_arns.write : "arn:aws:iam::aws:policy/AdministratorAccess"]
+  for_each = { for proj in local.projects : proj.name => proj }
+  source   = "Young-ook/spinnaker/aws//modules/codebuild"
+  version  = "2.3.6"
+  name     = each.key
+  tags     = var.tags
+  policy_arns = (each.key == "build" ? [
+    module.artifact.policy_arns.write,
+    "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
+    ] : [
+    "arn:aws:iam::aws:policy/AdministratorAccess"
+  ])
   project = {
     source = {
       type      = "GITHUB"
@@ -128,12 +134,14 @@ module "build" {
     environment = {
       compute_type    = lookup(each.value, "compute_type", "BUILD_GENERAL1_SMALL")
       type            = lookup(each.value, "type", "LINUX_CONTAINER")
-      image           = lookup(each.value, "image", "aws/codebuild/standard:4.0")
+      image           = lookup(each.value, "image", "aws/codebuild/amazonlinux2-x86_64-standard:5.0")
       privileged_mode = true
       environment_variables = {
         ARTIFACT_BUCKET = module.artifact.bucket.id
         APP_PATH        = lookup(each.value, "app_path")
         PKG             = "lambda_handler.zip"
+        FUNC            = lookup(each.value, "app_name")
+        ALIAS           = "dev"
       }
     }
   }
@@ -141,7 +149,7 @@ module "build" {
 
 ### deploy
 resource "aws_codedeploy_app" "lambda-running" {
-  name             = var.name == null || var.name == "eda" ? "lambda-running" : var.name
+  name             = join("-", [var.name == null ? "eda" : var.name, "lambda-running"])
   tags             = var.tags
   compute_platform = "Lambda"
 }
@@ -149,7 +157,7 @@ resource "aws_codedeploy_app" "lambda-running" {
 resource "aws_codedeploy_deployment_group" "lambda-running" {
   app_name               = aws_codedeploy_app.lambda-running.name
   tags                   = var.tags
-  deployment_group_name  = var.name == null || var.name == "eda" ? "lambda-running" : var.name
+  deployment_group_name  = join("-", [var.name == null ? "eda" : var.name, "lambda-running"])
   deployment_config_name = "CodeDeployDefault.LambdaAllAtOnce"
   service_role_arn       = aws_iam_role.deploy-lambda.arn
 

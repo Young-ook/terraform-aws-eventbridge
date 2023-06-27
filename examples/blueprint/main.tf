@@ -138,13 +138,19 @@ data "archive_file" "lambda_zip_file" {
 ### application/function
 module "lambda" {
   source  = "Young-ook/eventbridge/aws//modules/lambda"
-  version = "0.0.9"
+  version = "0.0.12"
   for_each = { for fn in [
     {
       name = "running"
       function = {
         package = data.archive_file.lambda_zip_file["running"].output_path
         handler = "lambda_up_and_running.lambda_handler"
+        aliases = [
+          {
+            name    = "dev"
+            version = "$LATEST"
+          },
+        ]
       }
       tracing     = {}
       vpc         = var.vpc_config

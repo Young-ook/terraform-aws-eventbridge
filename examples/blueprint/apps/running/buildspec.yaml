@@ -1,0 +1,37 @@
+version: 0.2
+env:
+  shell: bash
+phases:
+  pre_build:
+    commands:
+      - LIB=${APP_PATH}/lib
+      - if [ -d ${LIB} ]; then rm -r ${LIB}; fi
+      - mkdir -p ${LIB}
+      - pip3 install --target ${LIB} urllib3
+  build:
+    commands:
+      - cd ${LIB} && zip -gr9 ${OLDPWD}/${PKG} .
+      - cd ${OLDPWD}
+      - SRC=${APP_PATH}
+      - cd ${SRC} && zip ${OLDPWD}/${PKG} *.py
+      - cd ${OLDPWD}
+  post_build:
+    commands:
+      # Set function_version when creating alias to be able to deploy using it,
+      # because AWS CodeDeploy doesn't understand $LATEST as CurrentVersion.
+      - CURRENT_VER=$(aws lambda get-alias --function-name ${FUNC} --name ${ALIAS} --query 'FunctionVersion' --region ${AWS_REGION} --output text)
+      - echo ${CURRENT_VER}
+      - if [ '$LATEST' == ${CURRENT_VER} ]; then CURRENT_VER=1; fi
+      - echo ${CURRENT_VER}
+      - TARGET_VER=$(aws lambda update-function-code --function-name ${FUNC} --zip-file fileb://${PKG} --publish --query 'Version' --region ${AWS_REGION} --output text)
+      - echo ${TARGET_VER}
+      ###
+      ### - aws lambda update-alias --function-name <name> --name <alias-name> --function-version ${VERSION} --output text --region ${AWS_REGION}
+      ### - aws lambda list-versions-by-function --function-name running --query 'Versions[].Version' --output text
+      - sed -i s/{FUNC}/${FUNC}/g ${APP_PATH}/appspec.yaml
+      - sed -i s/{ALIAS}/${ALIAS}/g ${APP_PATH}/appspec.yaml
+      - sed -i s/{CURRENT_VER}/${CURRENT_VER}/g ${APP_PATH}/appspec.yaml
+      - sed -i s/{TARGET_VER}/${TARGET_VER}/g ${APP_PATH}/appspec.yaml
+      - cat ${APP_PATH}/appspec.yaml
+artifacts:
+  files: ${APP_PATH}/appspec.yaml

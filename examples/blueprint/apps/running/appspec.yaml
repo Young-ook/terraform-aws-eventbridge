@@ -1,0 +1,9 @@
+version: 0.0
+Resources:
+- myfunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Name: {FUNC}
+      Alias: {ALIAS}
+      CurrentVersion: {CURRENT_VER}
+      TargetVersion: {TARGET_VER}

@@ -134,7 +134,7 @@ module "build" {
     environment = {
       compute_type    = lookup(each.value, "compute_type", "BUILD_GENERAL1_SMALL")
       type            = lookup(each.value, "type", "LINUX_CONTAINER")
-      image           = lookup(each.value, "image", "aws/codebuild/standard:4.0")
+      image           = lookup(each.value, "image", "aws/codebuild/amazonlinux2-x86_64-standard:5.0")
       privileged_mode = true
       environment_variables = {
         ARTIFACT_BUCKET = module.artifact.bucket.id

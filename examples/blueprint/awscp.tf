@@ -169,6 +169,7 @@ resource "aws_codedeploy_deployment_group" "lambda-running" {
   }
 }
 
+### security/policy
 resource "aws_iam_role" "deploy-lambda" {
   name = join("-", [var.name == null ? "eda" : var.name, "deploy-lambda"])
   tags = var.tags
@@ -182,4 +183,9 @@ resource "aws_iam_role" "deploy-lambda" {
       }
     }]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "deploy-lambda" {
+  role       = aws_iam_role.deploy-lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambdaLimited"
 }

@@ -167,7 +167,6 @@ module "lambda" {
       policy_arns = [aws_iam_policy.ddb-access.arn]
     },
   ] : fn.name => fn }
-  name        = each.key
   tags        = var.tags
   lambda      = lookup(each.value, "function")
   tracing     = lookup(each.value, "tracing")

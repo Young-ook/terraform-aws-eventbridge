@@ -19,15 +19,14 @@ phases:
     commands:
       # Set function_version when creating alias to be able to deploy using it,
       # because AWS CodeDeploy doesn't understand $LATEST as CurrentVersion.
+      # - aws lambda list-versions-by-function --function-name running --query 'Versions[].Version' --output text
       - CURRENT_VER=$(aws lambda get-alias --function-name ${FUNC} --name ${ALIAS} --query 'FunctionVersion' --region ${AWS_REGION} --output text)
       - echo ${CURRENT_VER}
       - if [ '$LATEST' == ${CURRENT_VER} ]; then CURRENT_VER=1; fi
       - echo ${CURRENT_VER}
       - TARGET_VER=$(aws lambda update-function-code --function-name ${FUNC} --zip-file fileb://${PKG} --publish --query 'Version' --region ${AWS_REGION} --output text)
       - echo ${TARGET_VER}
-      ###
-      ### - aws lambda update-alias --function-name <name> --name <alias-name> --function-version ${VERSION} --output text --region ${AWS_REGION}
-      ### - aws lambda list-versions-by-function --function-name running --query 'Versions[].Version' --output text
+      - aws lambda update-alias --function-name ${FUNC} --name ${ALIAS} --function-version ${CURRENT_VER} --region ${AWS_REGION} --output text
       - sed -i s/{FUNC}/${FUNC}/g ${APP_PATH}/appspec.yaml
       - sed -i s/{ALIAS}/${ALIAS}/g ${APP_PATH}/appspec.yaml
       - sed -i s/{CURRENT_VER}/${CURRENT_VER}/g ${APP_PATH}/appspec.yaml

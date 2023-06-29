@@ -108,7 +108,7 @@ locals {
       name      = "build"
       buildspec = "examples/blueprint/apps/running/buildspec.yaml"
       app_path  = "examples/blueprint/apps/running"
-      app_name  = "running"
+      app_name  = module.lambda["running"].function.function_name
     },
   ]
 }

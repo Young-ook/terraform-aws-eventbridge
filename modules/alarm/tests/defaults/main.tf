@@ -55,7 +55,6 @@ module "main" {
               namespace   = "ContainerInsights"
               period      = "10"
               stat        = "Average"
-              #        unit        = "Count"
               dimensions = {
                 Namespace   = "sockshop"
                 Service     = "front-end"
@@ -94,6 +93,20 @@ module "main" {
           ]
         },
       ]
+    },
+    {
+      name = "tc4"
+      alarm_metric = {
+        comparison_operator = "GreaterThanOrEqualToThreshold"
+        evaluation_periods  = 1
+        datapoints_to_alarm = 1
+        threshold           = 60
+        extended_statistic  = "p90"
+        metric_name         = "TargetResponseTime"
+        namespace           = "AWS/ApplicationELB"
+        dimensions          = { LoadBalancer = "MyLB" }
+      }
+      metric_query = []
     },
   ] : a.name => a }
   alarm_metric = lookup(each.value, "alarm_metric")

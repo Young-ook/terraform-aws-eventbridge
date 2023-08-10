@@ -17,10 +17,7 @@ variable "alarm_actions" {
 variable "metric_query" {
   description = "Enables you to create an alarm based on a metric math expression. You may specify at most 20."
   type        = any
-  validation {
-    condition     = var.metric_query != null && length(var.metric_query) > 0
-    error_message = "Metric query must not be null. also, the length of list should be greater than 0."
-  }
+  default     = []
 }
 
 ### description

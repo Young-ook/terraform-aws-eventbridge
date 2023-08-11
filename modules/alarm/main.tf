@@ -5,11 +5,16 @@ resource "aws_cloudwatch_metric_alarm" "alarm" {
 
   # alarm condition
   comparison_operator                   = lookup(var.alarm_metric, "comparison_operator", "GreaterThanThreshold")
-  threshold                             = lookup(var.alarm_metric, "threshold", 1)
   treat_missing_data                    = lookup(var.alarm_metric, "treat_missing_data", "missing")
   datapoints_to_alarm                   = lookup(var.alarm_metric, "datapoints_to_alarm", null)
+  threshold                             = lookup(var.alarm_metric, "threshold", 1)
   evaluation_periods                    = lookup(var.alarm_metric, "evaluation_periods", 1)
+  period                                = lookup(var.alarm_metric, "period", null)
   evaluate_low_sample_count_percentiles = lookup(var.alarm_metric, "evaluate_low_sample_count_percentiles", null)
+  metric_name                           = lookup(var.alarm_metric, "metric_name", null)
+  namespace                             = lookup(var.alarm_metric, "namespace", null)
+  extended_statistic                    = lookup(var.alarm_metric, "extended_statistic", null)
+  statistic                             = lookup(var.alarm_metric, "statistic", null)
 
   # alarm actions
   actions_enabled           = lookup(var.alarm_actions, "actions_enabled", false)
@@ -19,7 +24,7 @@ resource "aws_cloudwatch_metric_alarm" "alarm" {
 
   # metric query
   dynamic "metric_query" {
-    for_each = var.metric_query
+    for_each = (var.metric_query == null) ? [] : var.metric_query
     content {
       id          = lookup(metric_query.value, "id")
       label       = lookup(metric_query.value, "label", null)

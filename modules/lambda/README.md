@@ -10,3 +10,30 @@ The default regional concurrency quota starts at 1,000 instances. For more infor
 
 ## Lambda Layer
 Lambda [layers](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-concepts.html#gettingstarted-concepts-layer) provide a convenient way to package libraries and other dependencies that you can use with your Lambda functions. Using layers reduces the size of uploaded deployment archives and makes it faster to deploy your code. A layer is a .zip file archive that can contain additional code or data. A layer can contain libraries, a custom runtime, data, or configuration files. Layers promote code sharing and separation of responsibilities so that you can iterate faster on writing business logic. For more details, please refer to the [Creating and sharing Lambda layers](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html) document.
+
+## Setup
+### Prerequisites
+This module requires *terraform*. If you don't have the terraform tool in your environment, go to the main [page](https://github.com/Young-ook/terraform-aws-eventbridge) of this repository and follow the installation instructions.
+
+### Quickstart
+```
+data "archive_file" "lambda_zip_file" {
+  output_path = join("/", [path.module, "lambda_handler.zip"])
+  source_file = join("/", [path.module, "lambda_function.py"])
+  type        = "zip"
+}
+
+module "lambda" {
+  source  = "Young-ook/eventbridge/aws//modules/lambda"
+  lambda = {
+    handler          = "lambda_function.lambda_handler"
+    package          = data.archive_file.lambda_zip_file.output_path
+    source_code_hash = data.archive_file.lambda_zip_file.output_base64sha256
+  }
+}
+```
+Run terraform:
+```
+terraform init
+terraform apply
+```

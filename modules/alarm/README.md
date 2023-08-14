@@ -9,12 +9,34 @@ You can create both `metric` alarms and `composite` alarms in CloudWatch.
 
 - A composite alarm includes a rule expression that takes into account the alarm states of other alarms that you have created. The composite alarm goes into ALARM state only if all conditions of the rule are met. The alarms specified in a composite alarm's rule expression can include metric alarms and other composite alarms.
 
-## Quickstart
-### Setup
-```hcl
+## Setup
+### Prerequisites
+This module requires *terraform*. If you don't have the terraform tool in your environment, go to the main [page](https://github.com/Young-ook/terraform-aws-eventbridge) of this repository and follow the installation instructions.
+
+### Quickstart
+```
 module "alarm" {
-  source  = "Young-ook/eventbridge/aws//modules/alarm"
-  name    = "example"
+  source      = "Young-ook/eventbridge/aws//modules/alarm"
+  alarm_metric = {
+    comparison_operator = "GreaterThanOrEqualToThreshold"
+    evaluation_periods  = 1
+    threshold           = 10
+  }
+  metric_query = [
+    {
+      id          = "error_count"
+      return_data = true
+      metric = [
+        {
+          metric_name = "CPUUtilization"
+          namespace   = "AWS/RDS"
+          stat        = "Average"
+          period      = 60
+          dimensions  = { DBClusterIdentifier = "MyDB" }
+        },
+      ]
+    }
+  ]
 }
 ```
 Run terraform:

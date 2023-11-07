@@ -22,7 +22,7 @@ resource "aws_lambda_permission" "lambda" {
 # lambda
 module "lambda" {
   source      = "Young-ook/eventbridge/aws//modules/lambda"
-  version     = "0.0.8"
+  version     = "0.0.12"
   name        = var.name
   tags        = var.tags
   lambda      = lookup(var.lambda, "function")

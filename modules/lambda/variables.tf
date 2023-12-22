@@ -2,7 +2,7 @@
 
 ### network
 variable "vpc" {
-  description = "VPC configuration for function"
+  description = "VPC network configuration"
   type        = any
   default     = {}
 }
@@ -28,9 +28,16 @@ variable "layer" {
   }
 }
 
+### computing/filesystem
+variable "filesystem" {
+  description = "File system configuration"
+  type        = any
+  default     = {}
+}
+
 ### observability/tracing
 variable "tracing" {
-  description = "Tracing configuration for function"
+  description = "Tracing configuration"
   type        = any
   default     = {}
 }

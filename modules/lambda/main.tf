@@ -61,6 +61,16 @@ resource "aws_lambda_function" "lambda" {
       security_group_ids = lookup(vpc_config.value, "security_groups")
     }
   }
+
+  dynamic "file_system_config" {
+    for_each = var.filesystem != null ? {
+      for k, v in [var.filesystem] : k => v if length(var.filesystem) > 0
+    } : {}
+    content {
+      local_mount_path = lookup(file_system_config.value, "local_mount_path", local.default_file_system_config["mount_path"])
+      arn              = lookup(file_system_config.value, "arn")
+    }
+  }
 }
 
 ### security/policy

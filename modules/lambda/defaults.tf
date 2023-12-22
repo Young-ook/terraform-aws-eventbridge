@@ -38,4 +38,7 @@ locals {
   default_tracing_config = {
     mode = "PassThrough"
   }
+  default_file_system_config = {
+    mount_path = "/mnt"
+  }
 }

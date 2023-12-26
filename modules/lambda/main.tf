@@ -95,10 +95,16 @@ resource "aws_iam_role_policy_attachment" "execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-resource "aws_iam_role_policy_attachment" "vpc-access" {
+resource "aws_iam_role_policy_attachment" "vpc" {
   for_each   = toset(local.lambda_enabled ? ["enabled"] : [])
   role       = aws_iam_role.lambda["enabled"].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "efs" {
+  for_each   = toset(local.lambda_enabled ? ["enabled"] : [])
+  role       = aws_iam_role.lambda["enabled"].name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "tracing" {

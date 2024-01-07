@@ -22,8 +22,12 @@ A topic exchange type provides a means to send messages to queues which are base
 * [Measuring the throughput for Amazon MQ using JMS Benchmark](https://aws.amazon.com/blogs/compute/measuring-the-throughput-for-amazon-mq-using-the-jms-benchmark/)
 
 ## Additional Resources
-* [RabbitMQ Tutorials](https://www.rabbitmq.com/getstarted.html)
-* [Part 1: RabbitMQ Best Practices](https://www.cloudamqp.com/blog/part1-rabbitmq-best-practice.html)
-* [Part 2: Best Practice for High Performance](https://www.cloudamqp.com/blog/part2-rabbitmq-best-practice-for-high-performance.html)
-* [Part 3: Best Practice for High Availability](https://www.cloudamqp.com/blog/part3-rabbitmq-best-practice-for-high-availability.html)
-* [Part 4: 13 Common RabbitMQ Mistakes](https://www.cloudamqp.com/blog/part4-rabbitmq-13-common-errors.html)
+### Modern Messaging for Application
+- [AWS Messaging](https://aws.amazon.com/messaging/)
+
+### RabbitMQ
+- [RabbitMQ Tutorials](https://www.rabbitmq.com/getstarted.html)
+- [Part 1: RabbitMQ Best Practices](https://www.cloudamqp.com/blog/part1-rabbitmq-best-practice.html)
+- [Part 2: Best Practice for High Performance](https://www.cloudamqp.com/blog/part2-rabbitmq-best-practice-for-high-performance.html)
+- [Part 3: Best Practice for High Availability](https://www.cloudamqp.com/blog/part3-rabbitmq-best-practice-for-high-availability.html)
+- [Part 4: 13 Common RabbitMQ Mistakes](https://www.cloudamqp.com/blog/part4-rabbitmq-13-common-errors.html)

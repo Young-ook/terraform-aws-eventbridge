@@ -34,9 +34,13 @@ resource "aws_msk_cluster" "kafka" {
 
   broker_node_group_info {
     instance_type   = local.instance_type
-    ebs_volume_size = local.disk_size
     client_subnets  = local.subnets
     security_groups = local.security_groups == null || local.security_groups == [] ? [aws_security_group.kafka.id] : local.security_groups
+    storage_info {
+      ebs_storage_info {
+        volume_size = local.disk_size
+      }
+    }
   }
   /* 
   encryption_info {

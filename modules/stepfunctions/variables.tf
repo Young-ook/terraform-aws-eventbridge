@@ -6,14 +6,14 @@ variable "policy_arns" {
 }
 
 ### state machine flow
-variable "sfn_config" {
+variable "workflow" {
   description = "State machine workflow definitions"
   type        = map(any)
   default     = {}
 }
 
 ### tracing
-variable "tracing_config" {
+variable "tracing" {
   description = "Tracing configuration for Step Functions"
   type        = map(any)
   default     = {}

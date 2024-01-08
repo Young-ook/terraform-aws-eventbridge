@@ -1,11 +1,6 @@
 ### AWS CodePipeline
 
-## aws partition and region (global, gov, china)
-module "aws" {
-  source = "Young-ook/spinnaker/aws//modules/aws-partitions"
-}
-
-# security/policy
+### security/policy
 resource "aws_iam_role" "cp" {
   name = local.name
   tags = merge(local.default-tags, var.tags)
@@ -45,14 +40,14 @@ resource "aws_iam_role_policy_attachment" "extra" {
   role       = aws_iam_role.cp.name
 }
 
-# workflow
+### workflows
 resource "aws_codepipeline" "cp" {
   name     = local.name
   tags     = merge(local.default-tags, var.tags)
   role_arn = aws_iam_role.cp.arn
 
   dynamic "artifact_store" {
-    for_each = { for k, v in var.artifact_config : k => v }
+    for_each = { for k, v in var.artifacts : k => v }
     content {
       location = lookup(artifact_store.value, "location")
       type     = lookup(artifact_store.value, "type")
@@ -68,7 +63,7 @@ resource "aws_codepipeline" "cp" {
   }
 
   dynamic "stage" {
-    for_each = { for k, v in var.stage_config : k => v }
+    for_each = { for k, v in var.stages : k => v }
     content {
       name = lookup(stage.value, "name")
       dynamic "action" {

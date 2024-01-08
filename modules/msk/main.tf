@@ -2,16 +2,16 @@
 
 ## parameters
 locals {
-  vpc             = lookup(var.vpc_config, "vpc", local.default_vpc_config.vpc)
-  subnets         = lookup(var.vpc_config, "subnets", local.default_vpc_config.subnets)
-  security_groups = lookup(var.vpc_config, "security_groups", local.default_vpc_config.security_groups)
-  kafka_version   = lookup(var.msk_config, "kafka_version", local.default_msk_config.kafka_version)
-  instance_count  = lookup(var.msk_config, "instance_count", local.default_msk_config.instance_count)
-  instance_type   = lookup(var.msk_config, "instance_type", local.default_msk_config.instance_type)
-  disk_size       = lookup(var.msk_config, "disk_size", local.default_msk_config.disk_size)
-  scaling_policy  = lookup(var.msk_config, "scaling_policy", local.default_msk_config.scaling_policy)
-  monitoring      = lookup(var.msk_config, "monitoring", local.default_msk_config.monitoring)
-  properties_file = lookup(var.msk_config, "properties_file", local.default_msk_config.properties_file)
+  vpc             = lookup(var.vpc, "vpc", local.default_vpc_config.vpc)
+  subnets         = lookup(var.vpc, "subnets", local.default_vpc_config.subnets)
+  security_groups = lookup(var.vpc, "security_groups", local.default_vpc_config.security_groups)
+  kafka_version   = lookup(var.msk, "kafka_version", local.default_msk_config.kafka_version)
+  instance_count  = lookup(var.msk, "instance_count", local.default_msk_config.instance_count)
+  instance_type   = lookup(var.msk, "instance_type", local.default_msk_config.instance_type)
+  disk_size       = lookup(var.msk, "disk_size", local.default_msk_config.disk_size)
+  scaling_policy  = lookup(var.msk, "scaling_policy", local.default_msk_config.scaling_policy)
+  monitoring      = lookup(var.msk, "monitoring", local.default_msk_config.monitoring)
+  properties_file = lookup(var.msk, "properties_file", local.default_msk_config.properties_file)
 }
 
 ## cluster
@@ -55,7 +55,7 @@ resource "aws_msk_cluster" "kafka" {
   }
 
   dynamic "logging_info" {
-    for_each = toset([var.log_config])
+    for_each = toset([var.log])
     content {
       broker_logs {
         dynamic "cloudwatch_logs" {

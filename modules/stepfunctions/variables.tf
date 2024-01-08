@@ -1,15 +1,15 @@
-### security
-variable "policy_arns" {
-  description = "Policy ARNs to attach to the step functions state machine"
-  type        = list(string)
-  default     = []
-}
-
 ### state machine flow
 variable "workflow" {
   description = "State machine workflow definitions"
   type        = map(any)
   default     = {}
+}
+
+### security
+variable "policy_arns" {
+  description = "Policy ARNs to attach to the step functions state machine"
+  type        = list(string)
+  default     = []
 }
 
 ### tracing

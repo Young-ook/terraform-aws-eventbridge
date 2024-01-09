@@ -1,4 +1,4 @@
-# managed message queue broker (Amazon MQ)
+### managed message queue broker (Amazon MQ)
 
 ## parameters
 locals {
@@ -12,27 +12,22 @@ locals {
   maintenance_window = lookup(var.mq, "maintenance", local.default_maintenance_window)
 }
 
-# aws partition and region (global, gov, china)
-module "aws" {
-  source = "Young-ook/spinnaker/aws//modules/aws-partitions"
-}
-
-# security/secret
+### security/secret
 module "vault" {
   source  = "Young-ook/passport/aws//modules/aws-secrets"
-  version = "0.0.4"
+  version = "0.0.12"
   name    = join("-", [local.default_admin.username, local.name])
   secret  = random_password.password.result
 }
 
-# security/password
+### security/password
 resource "random_password" "password" {
   length           = 16
   special          = true
   override_special = "^"
 }
 
-## cluster
+### cluster
 resource "aws_mq_configuration" "mq" {
   for_each       = toset(local.compatibility == "ActiveMQ" && local.config != null ? ["activemq"] : [])
   name           = local.name

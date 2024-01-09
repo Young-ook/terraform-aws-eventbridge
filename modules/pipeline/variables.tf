@@ -6,12 +6,12 @@ variable "policy_arns" {
 }
 
 ### code pipeline
-variable "artifact_config" {
-  description = "Pipeline artifact configuration"
+variable "artifacts" {
+  description = "Pipeline artifact store configuration"
   default     = []
 }
 
-variable "stage_config" {
+variable "stages" {
   description = "List of pipeline stage configuration"
   default     = []
 }

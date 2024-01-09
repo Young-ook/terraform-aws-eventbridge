@@ -1,3 +1,4 @@
+### bus
 module "event" {
   source  = "Young-ook/eventbridge/aws"
   version = "0.0.6"
@@ -19,7 +20,7 @@ resource "aws_lambda_permission" "lambda" {
   principal     = "events.amazonaws.com"
 }
 
-# lambda
+### handler
 module "lambda" {
   source      = "Young-ook/eventbridge/aws//modules/lambda"
   version     = "0.0.12"

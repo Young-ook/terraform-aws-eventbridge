@@ -1,4 +1,4 @@
-# dynamodb table
+### dynamodb table
 
 ### database/table
 resource "aws_dynamodb_table" "db" {

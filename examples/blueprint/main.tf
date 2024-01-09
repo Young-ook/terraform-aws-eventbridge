@@ -31,14 +31,14 @@ locals {
 ### choreography/eventbus
 module "default-eventbus" {
   source  = "Young-ook/eventbridge/aws"
-  version = "0.0.8"
+  version = "0.0.15"
   name    = "default"
   rules   = local.event_rules
 }
 
 module "custom-eventbus" {
   source  = "Young-ook/eventbridge/aws"
-  version = "0.0.8"
+  version = "0.0.15"
   name    = "custom-eventbus"
   rules   = [element(local.event_rules, 1)]
 }
@@ -85,7 +85,8 @@ resource "aws_iam_role" "invoke-sfn" {
 
 ### orchestration/flow
 module "sfn" {
-  source      = "../../modules/stepfunctions"
+  source      = "Young-ook/eventbridge/aws//modules/stepfunctions"
+  version     = "0.0.15"
   name        = var.name
   tags        = var.tags
   policy_arns = [aws_iam_policy.invoke-lambda.arn]
@@ -138,7 +139,7 @@ data "archive_file" "lambda_zip_file" {
 ### application/function
 module "lambda" {
   source  = "Young-ook/eventbridge/aws//modules/lambda"
-  version = "0.0.12"
+  version = "0.0.15"
   for_each = { for fn in [
     {
       name = "running"
@@ -199,7 +200,8 @@ resource "aws_iam_policy" "ddb-access" {
 
 ### database/dynamodb
 module "dynamodb" {
-  source       = "../../modules/dynamodb"
+  source       = "Young-ook/eventbridge/aws//modules/dynamodb"
+  version      = "0.0.15"
   name         = "lambda-apigateway"
   tags         = var.tags
   billing_mode = lookup(var.dynamodb_config, "billing_mode", "PROVISIONED")

@@ -24,7 +24,7 @@ variable "metric_query" {
 variable "name" {
   description = "Alarm name"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "description" {

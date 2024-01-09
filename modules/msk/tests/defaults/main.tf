@@ -30,7 +30,7 @@ module "main" {
   for_each = { for msk in [
     {
       type = "tc1"
-      msk_config = {
+      msk = {
         kafka_version   = "2.6.2"
         properties_file = "${path.module}/custom.server.properties"
         monitoring = {
@@ -41,7 +41,7 @@ module "main" {
     },
     {
       type = "tc2"
-      msk_config = {
+      msk = {
         kafka_version = "2.6.2"
         monitoring = {
           prometheus_jmx_exporter_enabled  = false
@@ -50,12 +50,12 @@ module "main" {
       }
     },
   ] : msk.type => msk }
-  msk_config = lookup(each.value, "msk_config")
-  vpc_config = {
+  msk = lookup(each.value, "msk")
+  vpc = {
     vpc     = module.vpc.vpc.id
     subnets = slice(values(module.vpc.subnets["public"]), 0, 3)
   }
-  log_config = {
+  log = {
     cloudwatch_logs = {
       enabled   = true
       log_group = module.logs.log_group.name

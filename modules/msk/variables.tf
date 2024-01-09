@@ -1,17 +1,17 @@
 ### network
-variable "vpc_config" {
+variable "vpc" {
   description = "A Virtual Private Cloud (VPC) configuration"
   default     = {}
 }
 
 ### kafka
-variable "msk_config" {
+variable "msk" {
   description = "Kafka cluster configuration"
   default     = {}
 }
 
 ### log
-variable "log_config" {
+variable "log" {
   description = "Log configuration for Kafka cluster"
   default     = {}
 }

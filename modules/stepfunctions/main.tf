@@ -34,5 +34,5 @@ resource "aws_iam_role_policy_attachment" "extra" {
 resource "aws_sfn_state_machine" "sfn" {
   name       = local.name
   role_arn   = aws_iam_role.sfn.arn
-  definition = lookup(var.sfn_config, "definition")
+  definition = lookup(var.workflow, "definition")
 }

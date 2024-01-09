@@ -89,7 +89,7 @@ module "sfn" {
   name        = var.name
   tags        = var.tags
   policy_arns = [aws_iam_policy.invoke-lambda.arn]
-  sfn_config = {
+  workflow = {
     definition = <<EOF
 {
   "Comment": "A Hello World example of the Amazon States Language using an AWS Lambda Function",

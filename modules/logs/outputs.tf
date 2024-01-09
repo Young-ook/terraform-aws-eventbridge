@@ -1,3 +1,5 @@
+### output variables
+
 output "log_group" {
   description = "The attributes of generated log group"
   value       = aws_cloudwatch_log_group.logs

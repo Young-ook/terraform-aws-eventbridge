@@ -1,6 +1,6 @@
-## aws cloudwatch logs
+### aws cloudwatch logs
 
-# security/policy
+### security/policy
 resource "aws_iam_policy" "write" {
   name        = format("%s-logs-write", local.name)
   description = format("Allow to push and write logs to the cloudwatch logs")
@@ -19,6 +19,7 @@ resource "aws_iam_policy" "write" {
   })
 }
 
+### observability/log
 resource "aws_cloudwatch_log_group" "logs" {
   name              = local.log_group_name
   tags              = merge(local.default-tags, var.tags)

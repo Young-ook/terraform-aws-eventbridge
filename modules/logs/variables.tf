@@ -1,4 +1,4 @@
-### log-group
+### log
 variable "log_group" {
   description = "Log group configuration"
   type        = map(any)

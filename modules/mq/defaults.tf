@@ -1,4 +1,9 @@
-# default variables
+### default values
+
+### aws partition and region (global, gov, china)
+module "aws" {
+  source = "Young-ook/spinnaker/aws//modules/aws-partitions"
+}
 
 locals {
   default_vpc_config = {

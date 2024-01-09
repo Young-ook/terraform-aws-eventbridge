@@ -1,3 +1,4 @@
+### observability/alarm
 resource "aws_cloudwatch_metric_alarm" "alarm" {
   alarm_name        = local.name
   alarm_description = var.description

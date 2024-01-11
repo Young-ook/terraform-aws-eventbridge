@@ -62,5 +62,5 @@ resource "aws_cloudwatch_event_target" "target" {
   event_bus_name = local.custom_bus ? aws_cloudwatch_event_bus.bus["custom"].id : null
   rule           = lookup(each.value, "rule")
   arn            = lookup(each.value, "arn")
-  role_arn       = aws_iam_role.invoke.arn
+  role_arn       = strcontains(lookup(each.value, "arn", ""), "stateMachine") ? aws_iam_role.invoke.arn : null
 }

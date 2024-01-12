@@ -1,13 +1,10 @@
-## step functions state machine
-
-module "aws" {
-  source = "Young-ook/spinnaker/aws//modules/aws-partitions"
-}
+### step functions state machine
 
 ### security/policy
 resource "aws_iam_role" "sfn" {
   name = format("%s-sfn", local.name)
   assume_role_policy = jsonencode({
+    Version = "2012-10-17"
     Statement = [{
       Action = "sts:AssumeRole"
       Effect = "Allow"
@@ -15,8 +12,21 @@ resource "aws_iam_role" "sfn" {
         Service = format("states.%s", module.aws.partition.dns_suffix)
       }
     }]
-    Version = "2012-10-17"
   })
+
+  inline_policy {
+    name = join("-", [local.name, "invoke-targets"])
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [{
+        Action = [
+          "lambda:InvokeFunction",
+        ]
+        Effect   = "Allow"
+        Resource = ["*"]
+      }]
+    })
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "tracing" {
@@ -30,7 +40,7 @@ resource "aws_iam_role_policy_attachment" "extra" {
   policy_arn = each.value
 }
 
-# state machine
+### state machine
 resource "aws_sfn_state_machine" "sfn" {
   name       = local.name
   role_arn   = aws_iam_role.sfn.arn

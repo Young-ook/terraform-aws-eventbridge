@@ -1,7 +1,11 @@
 ### event source
 variable "rules" {
   description = "Event rules configuration"
-  default     = {}
+  default     = []
+  validation {
+    condition     = var.rules != null
+    error_message = "List of eventbridge rules is not valid."
+  }
 }
 
 ### network

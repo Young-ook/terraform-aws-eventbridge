@@ -63,6 +63,7 @@ terraform destroy -var-file fixture.tc1.tfvars
 ## AWS Lambda
 - [Lambda quotas](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html)
 - [Reserved concurrency](https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html)
+- [Operator Guide](https://docs.aws.amazon.com/lambda/latest/operatorguide/intro.html)
 
 ## AWS StepFunctions
 - [Use AWS Step Functions to Monitor Services Choreography](https://aws.amazon.com/blogs/architecture/use-aws-step-functions-to-monitor-services-choreography/)

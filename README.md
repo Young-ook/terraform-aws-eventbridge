@@ -39,3 +39,4 @@ tfenv use <version>
 ```
 
 # Additional Resources
+- [Building Event Driven Architectures](https://serverlessland.com/event-driven-architecture/intro)

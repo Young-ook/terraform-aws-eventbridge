@@ -67,3 +67,4 @@ terraform destroy -var-file fixture.tc1.tfvars
 
 ## AWS StepFunctions
 - [Use AWS Step Functions to Monitor Services Choreography](https://aws.amazon.com/blogs/architecture/use-aws-step-functions-to-monitor-services-choreography/)
+- [Orchestrate multiple ETL jobs using AWS Step Functions and AWS Lambda](https://aws.amazon.com/blogs/big-data/orchestrate-multiple-etl-jobs-using-aws-step-functions-and-aws-lambda/)

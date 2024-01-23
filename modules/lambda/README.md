@@ -44,3 +44,4 @@ terraform apply
 Firecracker is a virtual machine monitor (VMM) that uses the Linux Kernel-based Virtual Machine (KVM) to create and manage microVMs. Firecracker has a minimalist design. It excludes unnecessary devices and guest functionality to reduce the memory footprint and attack surface area of each microVM. 
 
 # Additional Resources
+- [Developing evolutionary architecture with AWS Lambda](https://aws.amazon.com/ko/blogs/compute/developing-evolutionary-architecture-with-aws-lambda/)

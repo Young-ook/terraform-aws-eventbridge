@@ -43,3 +43,7 @@ tfenv use <version>
 - [6 Strategies for Migrating Applications to the Cloud](https://medium.com/aws-enterprise-collection/6-strategies-for-migrating-applications-to-the-cloud-eb4e85c412b4)
 - [An E-Book of Cloud Best Practices for Your Enterprise](https://aws.amazon.com/blogs/enterprise-strategy/an-e-book-of-cloud-best-practices-for-your-enterprise/)
 - [Tutorial: Schedule a Serverless Workflow with AWS Step Functions and Amazon EventBridge Scheduler](https://aws.amazon.com/tutorials/scheduling-a-serverless-workflow-step-functions-amazon-eventbridge-scheduler/)
+- [Saga Pattern](https://microservices.io/patterns/data/saga.html)
+- [Saga Pattern | Application Transactions Using Microservices – Part I](https://www.couchbase.com/blog/saga-pattern-implement-business-transactions-using-microservices-part/)
+- [Saga Pattern | How to Implement Business Transactions Using Microservices – Part II](https://www.couchbase.com/blog/saga-pattern-implement-business-transactions-using-microservices-part-2/)
+- [Azure Architecture Center: Cloud Design Patterns](https://learn.microsoft.com/en-us/azure/architecture/patterns/)

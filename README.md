@@ -47,3 +47,4 @@ tfenv use <version>
 - [Saga Pattern | Application Transactions Using Microservices – Part I](https://www.couchbase.com/blog/saga-pattern-implement-business-transactions-using-microservices-part/)
 - [Saga Pattern | How to Implement Business Transactions Using Microservices – Part II](https://www.couchbase.com/blog/saga-pattern-implement-business-transactions-using-microservices-part-2/)
 - [Azure Architecture Center: Cloud Design Patterns](https://learn.microsoft.com/en-us/azure/architecture/patterns/)
+- [AWS Serverless](https://aws.amazon.com/serverless/)

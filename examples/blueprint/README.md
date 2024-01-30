@@ -55,10 +55,15 @@ terraform destroy -var-file fixture.tc1.tfvars
 # Additional Resources
 ## Amazon DynamoDB
 - [Using Lambda with API Gateway](https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway-tutorial.html)
+- [Amazon DynamoDB Lab](https://github.com/aws-samples/amazon-dynamodb-labs)
 
 ## Amazon EventBridge
 - [Building an event-driven application with Amazon EventBridge](https://aws.amazon.com/blogs/compute/building-an-event-driven-application-with-amazon-eventbridge/)
 - [Building an IAM Role swithcing tracker using Amazon EventBrdige andn AWS Lambda](https://github.com/Young-ook/terraform-aws-passport/tree/main/examples/role-switching-tracker)
+
+## Amazon MQ
+- [Using Amazon MQ as an event source for AWS Lambda](https://aws.amazon.com/blogs/compute/using-amazon-mq-as-an-event-source-for-aws-lambda/)
+- [Using Amazon MQ for RabbitMQ as an event source for Lambda](https://aws.amazon.com/blogs/compute/using-amazon-mq-for-rabbitmq-as-an-event-source-for-lambda/)
 
 ## AWS Lambda
 - [Lambda quotas](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html)
@@ -68,3 +73,7 @@ terraform destroy -var-file fixture.tc1.tfvars
 ## AWS StepFunctions
 - [Use AWS Step Functions to Monitor Services Choreography](https://aws.amazon.com/blogs/architecture/use-aws-step-functions-to-monitor-services-choreography/)
 - [Orchestrate multiple ETL jobs using AWS Step Functions and AWS Lambda](https://aws.amazon.com/blogs/big-data/orchestrate-multiple-etl-jobs-using-aws-step-functions-and-aws-lambda/)
+
+## Solutions
+- [Virtual Waiting Room on AWS](https://github.com/aws-solutions/virtual-waiting-room-on-aws)
+- [Serverless Document Processing](https://document-processing.serverlessworkshops.io/en/)

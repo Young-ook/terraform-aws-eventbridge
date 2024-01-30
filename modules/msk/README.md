@@ -7,3 +7,7 @@
 # Connect to Kafka
 module.msk.kafka.zookeeper_connect_string
 module.msk.kafka.bootstrap_broker_tls
+
+# Additional Resources
+## Amazon MSK
+- [Streaming Data Solution for Amazon MSK](https://aws.amazon.com/solutions/implementations/streaming-data-solution-for-amazon-msk/)
